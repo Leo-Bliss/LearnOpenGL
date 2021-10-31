@@ -49,6 +49,13 @@ const char *fragmentShaderSource = "#version 330 core\n"
 	"}\n\0";
 //vec4, alpha: 1.0f 完全不透明
 
+const char *fragmentShaderSource2 = "#version 330 core\n"
+"out vec4 FragColor;\n"
+"void main()\n"
+"{\n"
+"FragColor = vec4(0.5f, 0.5f, 0.2f, 1.0f);\n"
+"}\n\0";
+
 
 int main()
 {
@@ -115,6 +122,19 @@ int main()
 		std::cout << "ERROR::SHADER::FRAGEMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
+	// fragment Shader: 片段着色器2
+	GLuint fragmentShader2;
+	fragmentShader2 = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(fragmentShader2, 1, &fragmentShaderSource2, NULL);
+	glCompileShader(fragmentShader2);
+	// check compile result 
+	glGetShaderiv(fragmentShader2, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(fragmentShader2, 512, NULL, infoLog);
+		std::cout << "ERROR::SHADER::FRAGEMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+
 	// 创建一个着色器程序: 用于链接shader
 	GLuint shaderProgram;
 	shaderProgram = glCreateProgram();
@@ -130,10 +150,28 @@ int main()
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		std::cout << "ERROR::PROGRAM::LINK::FAILED\n" << infoLog << std::endl;
 	}
-
 	// 链接完成删除着色对象
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+	GLuint shaderProgram2;
+	shaderProgram2 = glCreateProgram();
+	// 将着色器对象附加到着色程序上
+	glAttachShader(shaderProgram2, vertexShader);
+	glAttachShader(shaderProgram2, fragmentShader2);
+	// 链接程序
+	glLinkProgram(shaderProgram2);
+	// 和检测编译一样检测链接是否成功
+	glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(shaderProgram2, 512, NULL, infoLog);
+		std::cout << "ERROR::PROGRAM::LINK::FAILED\n" << infoLog << std::endl;
+	}
+
+	// 链接完成删除着色对象
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader2);
 
 	// 三角形三个顶点的标准化设备坐标
 	GLfloat vertices1[] = {
@@ -144,9 +182,9 @@ int main()
 	};
 
 	GLfloat vertices2[] = {
-	0.5f, 0.5f, 0.0f, // top right
-	0.5f, -0.5f, 0.0f, // bottom right
-	-0.5f, 0.5f, 0.0f, // top left
+	-0.6f, -0.5f, 0.0f, // bottom left
+	0.4f, -0.5f, 0.0f, // bottom right
+	-0.6f, 0.5f, 0.0f, // top left
 
 	};
 
@@ -187,11 +225,13 @@ int main()
 		
 		// Draw
 		glUseProgram(shaderProgram); // 激活着色程序
+		
 
 		glBindVertexArray(VAO[0]);
 		glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
 		//glBindVertexArray(0);
 
+		glUseProgram(shaderProgram2);
 		glBindVertexArray(VAO[1]);
 		glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
 		glBindVertexArray(0);
