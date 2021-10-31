@@ -142,9 +142,9 @@ int main()
 		0.5f, -0.5f, 0.0f, // bottom right
 		-0.5f, 0.5f, 0.0f, // top left
 		// 第二个三角形
-		/*0.5f, -0.5f, 0.0f, // bottom right*/
+		0.5f, -0.5f, 0.0f, // bottom right
 		-0.5f, -0.5f, 0.0f, // bottom left
-		/*-0.5f, 0.5f, 0.0f // top left*/
+		-0.5f, 0.5f, 0.0f // top left
 
 	};// OpenGL工作在3D, 而现在渲染一个2D三角形 -> z = 0.0f (深度可理解为z坐标)
 
@@ -160,8 +160,8 @@ int main()
 	glGenVertexArrays(1, &VAO); // 生成顶点数组对象,包含了绘制某种图形所需要的所有状态
 	glGenBuffers(1, &VBO); // 生成顶点缓冲对象
 	
-	GLuint EBO;
-	glGenBuffers(1, &EBO);
+	//GLuint EBO;
+	//glGenBuffers(1, &EBO);
 
 	// 绑定VAO
 	glBindVertexArray(VAO);
@@ -171,9 +171,9 @@ int main()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// 绑定缓冲类型
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	// 根据索引确定顶点数据到缓冲
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// 显卡管理指定数据
 	// 缓冲中数据 不常变 采用： GL_STATIC_DRAW
@@ -210,8 +210,8 @@ int main()
 		// Draw
 		glUseProgram(shaderProgram); // 激活着色程序
 		glBindVertexArray(VAO);
-		// glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 6个点，索引类型为unsigned int, offset = 0
+		glDrawArrays(GL_TRIANGLES, 0, 6); // 0: 顶点起始索引，3绘制个数
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 6个点，索引类型为unsigned int, offset = 0
 		glBindVertexArray(0);
 
 		// swap the screen buffers
