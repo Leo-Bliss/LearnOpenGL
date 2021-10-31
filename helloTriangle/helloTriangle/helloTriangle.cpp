@@ -219,8 +219,9 @@ int main()
 
 	}
 	// 结束后回收所有分配的资源
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &VAO); // 第一个参数是指数量
 	glDeleteBuffers(1, &VBO);
+	//glDeleteBuffers(1, &EBO);
 	glfwTerminate(); 
 
 	return 0;
