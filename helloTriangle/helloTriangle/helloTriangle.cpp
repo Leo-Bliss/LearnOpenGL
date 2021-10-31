@@ -136,65 +136,43 @@ int main()
 	glDeleteShader(fragmentShader);
 
 	// 三角形三个顶点的标准化设备坐标
-	GLfloat vertices[] = {
-		// 第一个三角形
+	GLfloat vertices1[] = {
 		0.5f, 0.5f, 0.0f, // top right
 		0.5f, -0.5f, 0.0f, // bottom right
 		-0.5f, 0.5f, 0.0f, // top left
-		// 第二个三角形
-		0.5f, -0.5f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f, // bottom left
-		-0.5f, 0.5f, 0.0f // top left
 
-	};// OpenGL工作在3D, 而现在渲染一个2D三角形 -> z = 0.0f (深度可理解为z坐标)
-
-	// 根据顶点索引确定三角形
-	GLint indices[] = {
-		0, 1, 2, // 第一个三角形
-		1, 3, 2, // 第二个三角形
 	};
 
+	GLfloat vertices2[] = {
+	0.5f, 0.5f, 0.0f, // top right
+	0.5f, -0.5f, 0.0f, // bottom right
+	-0.5f, 0.5f, 0.0f, // top left
+
+	};
+
+
+	GLuint VBO[2], VAO[2]; // VBO:作为顶点缓冲对象ID; VAO:顶点数组对象ID
 	
-	GLuint VBO, VAO; // VBO:作为顶点缓冲对象ID; VAO:顶点数组对象ID
+	glGenVertexArrays(2, VAO); // 生成顶点数组对象,包含了绘制某种图形所需要的所有状态
+	glGenBuffers(2, VBO); // 生成顶点缓冲对象
 	
-	glGenVertexArrays(1, &VAO); // 生成顶点数组对象,包含了绘制某种图形所需要的所有状态
-	glGenBuffers(1, &VBO); // 生成顶点缓冲对象
-	
-	//GLuint EBO;
-	//glGenBuffers(1, &EBO);
 
-	// 绑定VAO
-	glBindVertexArray(VAO);
-	// 绑定缓冲类型
-	glBindBuffer(GL_ARRAY_BUFFER, VAO);
-	// 复制顶点数据到缓冲
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	// 绑定缓冲类型
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	// 根据索引确定顶点数据到缓冲
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// 显卡管理指定数据
-	// 缓冲中数据 不常变 采用： GL_STATIC_DRAW
-	// 数据会改变很多 采用： GL_DYNAMIC_DRAW 
-	// 数据每次绘制时都改变 采用： GL_STREAM_DRAW
-
-	// 告诉OpenGL该如何解析顶点数据
+	// first
+	glBindVertexArray(VAO[0]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	// 0： 是vertexShader中使用的layout(location = 0)的pos顶点属性位置值（location）
-	// 3： 指定顶点属性值大小， it is a vec3,so value is 3
-	// GL_FLOAT: 指定数据类型
-	// GL_FALSE: 是否对数据标准化， 如果是GL_TRUE会被映射到[-1, 1]
-	// 3 * sizeof(GLfloat)： 步长，现在每个都是vec3,vec3数据类型为GLfloat
-	// (void*)0： 需要强制类型转换，标识位置数据在缓冲中的起始位置偏移量（offset）,位置数据就在开头，so is 0
-
-	// 开启顶点属性让它作为参数，由于它默认是禁用的
 	glEnableVertexAttribArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
-	// unbind
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// 解绑VAO
+	// second
+	glBindVertexArray(VAO[1]);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 线框模式绘制
@@ -209,9 +187,13 @@ int main()
 		
 		// Draw
 		glUseProgram(shaderProgram); // 激活着色程序
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6); // 0: 顶点起始索引，3绘制个数
-		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 6个点，索引类型为unsigned int, offset = 0
+
+		glBindVertexArray(VAO[0]);
+		glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
+		//glBindVertexArray(0);
+
+		glBindVertexArray(VAO[1]);
+		glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
 		glBindVertexArray(0);
 
 		// swap the screen buffers
@@ -219,9 +201,8 @@ int main()
 
 	}
 	// 结束后回收所有分配的资源
-	glDeleteVertexArrays(1, &VAO); // 第一个参数是指数量
-	glDeleteBuffers(1, &VBO);
-	//glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(2, VAO); // 第一个参数是指数量
+	glDeleteBuffers(2, VBO);
 	glfwTerminate(); 
 
 	return 0;
