@@ -137,22 +137,44 @@ int main()
 
 	// 三角形三个顶点的标准化设备坐标
 	GLfloat vertices[] = {
-	-0.5f, -0.5f, 0.0f, // left
-	0.5f, -0.5f, 0.0f, // right
-	0.0f, 0.5f, 0.0f // top
+		// 第一个三角形
+		0.5f, 0.5f, 0.0f, // top right
+		0.5f, -0.5f, 0.0f, // bottom right
+		-0.5f, 0.5f, 0.0f, // top left
+		// 第二个三角形
+		/*0.5f, -0.5f, 0.0f, // bottom right*/
+		-0.5f, -0.5f, 0.0f, // bottom left
+		/*-0.5f, 0.5f, 0.0f // top left*/
+
 	};// OpenGL工作在3D, 而现在渲染一个2D三角形 -> z = 0.0f (深度可理解为z坐标)
 
+	// 根据顶点索引确定三角形
+	GLint indices[] = {
+		0, 1, 2, // 第一个三角形
+		1, 3, 2, // 第二个三角形
+	};
+
+	
 	GLuint VBO, VAO; // VBO:作为顶点缓冲对象ID; VAO:顶点数组对象ID
 	
 	glGenVertexArrays(1, &VAO); // 生成顶点数组对象,包含了绘制某种图形所需要的所有状态
 	glGenBuffers(1, &VBO); // 生成顶点缓冲对象
+	
+	GLuint EBO;
+	glGenBuffers(1, &EBO);
 
 	// 绑定VAO
 	glBindVertexArray(VAO);
 	// 绑定缓冲类型
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, VAO);
 	// 复制顶点数据到缓冲
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	// 绑定缓冲类型
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	// 根据索引确定顶点数据到缓冲
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
 	// 显卡管理指定数据
 	// 缓冲中数据 不常变 采用： GL_STATIC_DRAW
 	// 数据会改变很多 采用： GL_DYNAMIC_DRAW 
@@ -175,7 +197,8 @@ int main()
 	// 解绑VAO
 	glBindVertexArray(0);
 
-
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 线框模式绘制
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); //设置回默认模式
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
 	{
 		glfwPollEvents(); // 检查事件触发：比如键盘输入
@@ -187,7 +210,8 @@ int main()
 		// Draw
 		glUseProgram(shaderProgram); // 激活着色程序
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		// glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 6个点，索引类型为unsigned int, offset = 0
 		glBindVertexArray(0);
 
 		// swap the screen buffers
