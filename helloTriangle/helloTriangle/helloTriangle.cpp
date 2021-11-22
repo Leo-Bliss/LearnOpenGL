@@ -44,11 +44,11 @@ const char *vertexShaderSource = "#version 330 core\n"
 "}\0";
 
 const char *fragmentShaderSource = "#version 330 core\n"
-"in vec4 vertexColor;"
+"uniform vec4 ourColor;"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"FragColor = vertexColor;\n"
+"FragColor = ourColor;\n"
 "}\n\0";
 //vec4, alpha: 1.0f 完全不透明
 
@@ -179,6 +179,7 @@ int main()
 	glBindVertexArray(0);
 
 
+
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
 	{
 		glfwPollEvents(); // 检查事件触发：比如键盘输入
@@ -189,6 +190,14 @@ int main()
 
 		// Draw
 		glUseProgram(shaderProgram); // 激活着色程序
+
+		// 给uniform添加数据
+		GLfloat timeValue = glfwGetTime();
+		GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
+		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor"); // -1:代表没有找到
+		glUseProgram(shaderProgram);
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
