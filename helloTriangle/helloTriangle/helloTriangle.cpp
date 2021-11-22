@@ -35,20 +35,21 @@ const GLuint HEIGHT = 600;
 
 // Shader source
 const char *vertexShaderSource = "#version 330 core\n"
-"layout(location = 0) in vec3 aPos;\n"
-"out vec4 vertexColor;"
+"layout(location = 0) in vec3 position;\n" // 位置变量的位置值为0
+"layout(location = 1) in vec3 color;\n" // 颜色变量的属性位置值为1
+"out vec3 ourColor;\n" // 向片段着色器输出一个颜色
 "void main()\n"
 "{\n"
-"gl_Position = vec4(aPos, 1.0);\n"
-"vertexColor = vec4(0.5f, 0.0f, 0.0f, 1.0f);"
+"gl_Position = vec4(position, 1.0);\n"
+"ourColor = color;\n"
 "}\0";
 
 const char *fragmentShaderSource = "#version 330 core\n"
-"uniform vec4 ourColor;"
-"out vec4 FragColor;\n"
+"in vec3 ourColor;\n"
+"out vec4 fragColor;\n"
 "void main()\n"
 "{\n"
-"FragColor = ourColor;\n"
+"fragColor = vec4(ourColor, 1.0f);\n"
 "}\n\0";
 //vec4, alpha: 1.0f 完全不透明
 
@@ -140,10 +141,11 @@ int main()
 
 	// 三角形三个顶点的标准化设备坐标
 	GLfloat vertices[] = {
-	-0.5f, -0.5f, 0.0f, // left
-	0.5f, -0.5f, 0.0f, // right
-	0.0f, 0.5f, 0.0f // top
-	};// OpenGL工作在3D, 而现在渲染一个2D三角形 -> z = 0.0f (深度可理解为z坐标)
+		// 位置             // 颜色
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // 右下
+		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // 左下
+		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f  // 顶部
+	};
 
 	GLuint VBO, VAO; // VBO:作为顶点缓冲对象ID; VAO:顶点数组对象ID
 
@@ -161,17 +163,24 @@ int main()
 	// 数据会改变很多 采用： GL_DYNAMIC_DRAW 
 	// 数据每次绘制时都改变 采用： GL_STREAM_DRAW
 
-	// 告诉OpenGL该如何解析顶点数据
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	// 0： 是vertexShader中使用的layout(location = 0)的pos顶点属性位置值（location）
-	// 3： 指定顶点属性值大小， it is a vec3,so value is 3
-	// GL_FLOAT: 指定数据类型
-	// GL_FALSE: 是否对数据标准化， 如果是GL_TRUE会被映射到[-1, 1]
-	// 3 * sizeof(GLfloat)： 步长，现在每个都是vec3,vec3数据类型为GLfloat
-	// (void*)0： 需要强制类型转换，标识位置数据在缓冲中的起始位置偏移量（offset）,位置数据就在开头，so is 0
+	//// 告诉OpenGL该如何解析顶点数据
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+	//// 0： 是vertexShader中使用的layout(location = 0)的pos顶点属性位置值（location）
+	//// 3： 指定顶点属性值大小， it is a vec3,so value is 3
+	//// GL_FLOAT: 指定数据类型
+	//// GL_FALSE: 是否对数据标准化， 如果是GL_TRUE会被映射到[-1, 1]
+	//// 3 * sizeof(GLfloat)： 步长，现在每个都是vec3,vec3数据类型为GLfloat
+	//// (void*)0： 需要强制类型转换，标识位置数据在缓冲中的起始位置偏移量（offset）,位置数据就在开头，so is 0
 
-	// 开启顶点属性让它作为参数，由于它默认是禁用的
+	//// 开启顶点属性让它作为参数，由于它默认是禁用的
+	//glEnableVertexAttribArray(0);
+
+	// 位置属性
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
+	// 颜色属性
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat))); // 前面3个为位置，偏移3*..
+	glEnableVertexAttribArray(1);
 
 	// unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -179,6 +188,7 @@ int main()
 	glBindVertexArray(0);
 
 
+	
 
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
 	{
@@ -190,14 +200,6 @@ int main()
 
 		// Draw
 		glUseProgram(shaderProgram); // 激活着色程序
-
-		// 给uniform添加数据
-		GLfloat timeValue = glfwGetTime();
-		GLfloat greenValue = (sin(timeValue) / 2) + 0.5;
-		GLint vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor"); // -1:代表没有找到
-		glUseProgram(shaderProgram);
-		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
