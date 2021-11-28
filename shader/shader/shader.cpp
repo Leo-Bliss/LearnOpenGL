@@ -90,5 +90,13 @@ void Shader::use()
 	glUseProgram(program);
 }
 
+void Shader::setFloat(const GLchar* key, const GLfloat val)
+{
+	GLint keyLocation = glGetUniformLocation(program, key);
+	// std::cout <<key<<" getlocal res = "<< keyLocation << std::endl;
+	glUniform1f(keyLocation, val);
+	
+}
+
 
 

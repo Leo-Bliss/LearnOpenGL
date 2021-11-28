@@ -16,4 +16,6 @@ public:
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 	//  π”√≥Ã–Ú
 	void use();
+
+	void setFloat(const GLchar* key, const GLfloat val);
 };
