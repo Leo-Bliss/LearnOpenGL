@@ -46,7 +46,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // 主版本
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // 次版本
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// GLFW 创建窗口对象
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Triangle", nullptr, nullptr);
@@ -77,6 +77,8 @@ int main()
 
 	// shader
 	Shader ourShader("./shader.vs", "./shader.frag");
+	GLfloat offset = 15.f;
+	ourShader.setFloat("xOffset", offset);
 
 	// 三角形三个顶点的标准化设备坐标
 	GLfloat vertices[] = {
