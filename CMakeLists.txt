@@ -24,6 +24,7 @@ function(GetRelativeDir relativeDir)
 endfunction()
 
 #LIST(APPEND allSubDir "Triangle")
+LIST(APPEND allSubDir "Triangle")
 LIST(APPEND allSubDir "Hello")
 LIST(APPEND allSubDir "Libraries")
 
