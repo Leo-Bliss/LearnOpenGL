@@ -23,7 +23,9 @@ function(GetRelativeDir relativeDir)
 	set(${relativeDir} ${dir} PARENT_SCOPE)
 endfunction()
 
-#LIST(APPEND allSubDir "Triangle")
+
+#LIST(APPEND allSubDir "Shader")
+LIST(APPEND allSubDir "Shader")
 LIST(APPEND allSubDir "Triangle")
 LIST(APPEND allSubDir "Hello")
 LIST(APPEND allSubDir "Libraries")
