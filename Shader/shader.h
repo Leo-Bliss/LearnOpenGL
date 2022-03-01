@@ -18,4 +18,5 @@ public:
 	void use();
 
 	void setFloat(const GLchar* key, const GLfloat val);
+	void setColor(const GLchar* key, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 };

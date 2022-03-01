@@ -14,7 +14,7 @@
 /*
 顶点数组： Vertex Array Object, VAO
 顶点缓冲对象：Vertex Buffer Object, VBO
-索引缓冲对象： Element Buffer Object, EBO or Index Buffer Onject, IBO
+索引缓冲对象： Element Buffer Object, EBO or Index Buffer Object, IBO
 */
 // Shader: 着色器
 
@@ -76,9 +76,9 @@ int main()
 
 
 	// shader
-	Shader ourShader("./shader.vs", "./shader.fs");
-	GLfloat offset = 15.f;
-	ourShader.setFloat("xOffset", offset);
+	Shader ourShader("./shader/shader.vs", "./shader/shader.fs");
+	/*GLfloat offset = 15.f;
+	ourShader.setFloat("xOffset", offset);*/
 
 	// 三角形三个顶点的标准化设备坐标
 	GLfloat vertices[] = {
@@ -144,6 +144,10 @@ int main()
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glBindVertexArray(0);
+
+		/*GLfloat timeValue = glfwGetTime();
+		GLfloat greenValue = (std::sin(timeValue) / 2) + 0.5f;
+		ourShader.setColor("ourColor", 0.0f, greenValue, 0.0f, 1.0f);*/
 
 		// swap the screen buffers
 		glfwSwapBuffers(window);

@@ -98,5 +98,11 @@ void Shader::setFloat(const GLchar* key, const GLfloat val)
 	
 }
 
+void Shader::setColor(const GLchar* key, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	GLint keyLocation = glGetUniformLocation(program, key);;
+	glUniform4f(keyLocation, r, g, b, a);
+}
+
 
 
