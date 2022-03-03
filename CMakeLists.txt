@@ -28,6 +28,7 @@ LIST(APPEND allSubDir "Texture")
 LIST(APPEND allSubDir "Shader")
 LIST(APPEND allSubDir "Triangle")
 LIST(APPEND allSubDir "Hello")
+LIST(APPEND allSubDir "Components")
 LIST(APPEND allSubDir "Libraries")
 
 
