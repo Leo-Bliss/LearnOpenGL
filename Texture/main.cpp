@@ -17,7 +17,7 @@ int main()
 		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, // 右下
 		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, // 左下
 		-0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // 左上
-		 0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, // 右上
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.3f, 1.0f, 1.0f, // 右上
 		 0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.5f, 1.0f, // 顶部
 	};
 	GLuint indices[] = {
@@ -61,9 +61,9 @@ int main()
 	glBindVertexArray(0);
 
 	// 生成纹理
-	GLuint texture;
-	glGenTextures(1, &texture); // 第一个表示生成纹理数量，第二个为纹理存储单元，多个则使用GLuint数组存储
-	glBindTexture(GL_TEXTURE_2D, texture);
+	GLuint texture1;
+	glGenTextures(1, &texture1); // 第一个表示生成纹理数量，第二个为纹理存储单元，多个则使用GLuint数组存储
+	glBindTexture(GL_TEXTURE_2D, texture1);
 
 	// 纹理环绕方式
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
@@ -74,20 +74,42 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	// 加载纹理图片
-	int image_width, image_height, nrChannels;
 	const char* filePath = "../Asset/container.jpg";
-	unsigned char* image = stbi_load(filePath, &image_width, &image_height, &nrChannels, 0); //会返回宽高到对应变量中
-
-	if (image)
+	Image image1(filePath);
+	if (image1.loadSuccess())
 	{
 		// 纹理对象附加纹理图片
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image_width, image_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image1.getWidth(), image1.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image1.getRawIns());
 		glGenerateMipmap(GL_TEXTURE_2D); // 自动生成多级渐远纹理，从而不需要我们不断向glTexImage2D传入不同级别
 	}
-
 	// 生成纹理和对应多级纹理后： 释放内存和解绑纹理对象
-	stbi_image_free(image);
 	glBindTexture(GL_TEXTURE_2D, 0);
+
+	
+	// 生成纹理
+	GLuint texture2;
+	glGenTextures(1, &texture2); 
+	glBindTexture(GL_TEXTURE_2D, texture2);
+
+	// 纹理环绕方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	// 纹理过滤方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	filePath = "../Asset/awesomeface.png";
+	Image image2(filePath);
+	if (image2.loadSuccess())
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image2.getWidth(), image2.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image2.getRawIns());
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	// 生成纹理和对应多级纹理后： 释放内存和解绑纹理对象
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
 
 
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
@@ -99,7 +121,13 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT); // 清除颜色缓冲，是一个状态使用函数，使得应该清除为上面设置的颜色
 
 		// 绑定纹理
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glActiveTexture(GL_TEXTURE0); // 使用一个纹理时默认激活
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		ourShader.setInt("ourTexture1", 0);
+		glActiveTexture(GL_TEXTURE1); // 使用一个纹理时默认激活
+		glBindTexture(GL_TEXTURE_2D, texture2);
+		ourShader.setInt("ourTexture2", 1);
+		
 
 		// Draw
 		ourShader.use(); // 激活着色程序
