@@ -1,4 +1,4 @@
-#version 330 core
+ï»¿#version 330 core
 // in vec3 ourPosition;
 in vec3 ourColor;
 in vec2 TexCoord;
@@ -7,5 +7,5 @@ out vec4 color;
 uniform sampler2D ourTexCoord;
 void main()
 {
-	color = texture(ourTexCoord, TexCoord) * vec4(ourColor, 1.0f); // ÎÆÀíÑÕÉ«ºÍ¶¥µãÑÕÉ«»ìºÏ
+	color = texture(ourTexCoord, TexCoord); //* vec4(ourColor, 1.0f); // çº¹ç†é¢œè‰²å’Œé¡¶ç‚¹é¢œè‰²æ··åˆ
 };
