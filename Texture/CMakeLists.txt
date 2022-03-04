@@ -31,14 +31,17 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CM
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/..
-	${PROJECT_LIBRARIES_DIR}/glad/
-	${PROJECT_LIBRARIES_DIR}/glfw/
-	${PROJECT_LIBRARIES_DIR}/glm/
-	${PROJECT_LIBRARIES_DIR}/stb/
+#	${PROJECT_LIBRARIES_DIR}/glad/
+#	${PROJECT_LIBRARIES_DIR}/glfw/
+#	${PROJECT_LIBRARIES_DIR}/glm/
+#	${PROJECT_LIBRARIES_DIR}/stb/
+	${PROJECT_COMPONENTS_DIR}/../
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC 
-	glad
-	glfw
-	glm
+#	glad
+#	glfw
+#	glm
+	Common
+#	Window
 )
