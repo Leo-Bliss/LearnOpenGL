@@ -33,13 +33,13 @@ Shader::Shader(const GLchar* vsPath, const GLchar* fsPath)
 
 	GLuint vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER); 
-	glShaderSource(vertexShader, 1, &vShaderCode, NULL); // 着色源码附加到着色对象， 第二个参数指传递的源码字符串数量
+	glShaderSource(vertexShader, 1, &vShaderCode, nullptr); // 着色源码附加到着色对象， 第二个参数指传递的源码字符串数量
 	glCompileShader(vertexShader);
 	checkShaderCompile(vertexShader, vsPath);
 	
 	GLuint fragmentShader;
 	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fShaderCode, NULL);
+	glShaderSource(fragmentShader, 1, &fShaderCode, nullptr);
 	glCompileShader(fragmentShader);
 	checkShaderCompile(fragmentShader, fsPath);
 	
@@ -69,7 +69,7 @@ void Shader::checkShaderCompile(const GLuint shader, const GLchar* filePath)
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);// iv: info view
 	if (!success)
 	{
-		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		glGetShaderInfoLog(shader, 512, nullptr, infoLog);
 		std::cout << "Error::SHADER COMPILE, FileInfo:" << filePath<<", " << infoLog << std::endl;
 	}
 }
@@ -81,7 +81,7 @@ void Shader::checkProgramLink()
 	glGetProgramiv(_programID, GL_LINK_STATUS, &success);
 	if (!success)
 	{
-		glGetProgramInfoLog(_programID, 512, NULL, infoLog);
+		glGetProgramInfoLog(_programID, 512, nullptr, infoLog);
 		std::cout << "ERROR::PROGRAM::LINK::FAILED\n" << infoLog << std::endl;
 	}
 }

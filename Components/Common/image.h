@@ -17,7 +17,7 @@ public:
 	int getWidth()const { return _width; }
 	int getHeight()const { return _height; }
 	const unsigned char* getRawIns() const { return _imageIns; }
-	bool loadSuccess() { return _imageIns != nullptr; }
+	bool loadSuccessfully() { return _imageIns != nullptr; }
 
 private:
 	int _width;
