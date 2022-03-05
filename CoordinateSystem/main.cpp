@@ -2,6 +2,7 @@
 #include "image.h"
 #include "shader.h"
 #include <iostream>
+#include <vector>
 
 int main()
 {
@@ -154,6 +155,16 @@ int main()
 	// 开启深度测试
 	glEnable(GL_DEPTH_TEST);
 
+	std::vector<glm::vec3> positions = {
+		{1.0f, 1.0f, -3.0f},
+		{-1.7f,  3.0f, -7.5f},
+		{1.3f, -2.0f, -2.5f},
+		{1.5f,  2.0f, -2.5f},
+		{1.5f,  0.2f, -1.5f},
+		{-1.3f,  1.0f, -1.5f},
+
+	};
+
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
 	{
 		glfwPollEvents(); // 检查事件触发：比如键盘输入
@@ -162,15 +173,18 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // 清除颜色缓冲后需要填入的颜色，是一个状态设置函数
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 每次渲染迭代清除颜色缓冲和深度缓冲
 
-		glm::mat4 model(1.0f);
-		auto r = static_cast<float>(glfwGetTime() * glm::radians(-55.0f));
-		model = glm::rotate(model, r , glm::vec3(1.0f, 0.0f, 0.0f));
-		ourShader.setMatirx4("model", model);
-
-		// Draw
-		//ourShader.use(); // 激活着色程序
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 36); // 6 * 2 * 3
+		auto count = positions.size();
+		for (size_t i = 0; i < count; ++i)
+		{
+			glm::mat4 model(1.0f);
+			model = glm::translate(model, positions[i]);
+			auto r = static_cast<float>(glfwGetTime());
+			if(i % count >= 3) r = glm::radians(-22.0f * i);
+			model = glm::rotate(model, r, glm::vec3(1.0f, 0.4f, 0.5f));
+			ourShader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36); // 6 * 2 * 3
+		}
 		glBindVertexArray(0);
 
 		// swap the screen buffers
