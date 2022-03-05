@@ -144,10 +144,6 @@ int main()
 	glBindTexture(GL_TEXTURE_2D, texture2);
 	ourShader.setInt("ourTexture2", 1);
 
-	
-	glm::mat4 view(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-	ourShader.setMatirx4("view", view);
 	glm::mat4 projection;
 	projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f);
 	ourShader.setMatirx4("projection", projection);
@@ -174,6 +170,12 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 每次渲染迭代清除颜色缓冲和深度缓冲
 
 		glBindVertexArray(VAO);
+		const float radius = 10.0f;
+		glm::mat4 view(1.0f);
+		float camX = static_cast<float>(sin(glfwGetTime())) * radius;
+		float camZ = static_cast<float>(cos(glfwGetTime())) * radius;
+		view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		ourShader.setMatirx4("view", view);
 		auto count = positions.size();
 		for (size_t i = 0; i < count; ++i)
 		{
