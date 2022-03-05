@@ -105,4 +105,10 @@ void Shader::setInt(const GLchar* key, const GLint val)
 	glUniform1i(keyLocation, val);
 }
 
+void Shader::setMatirx4(const GLchar* key, const glm::mat4& mat)
+{
+	GLint keyLocation = glGetUniformLocation(_programID, key);
+	glUniformMatrix4fv(keyLocation, 1, GL_FALSE, glm::value_ptr(mat)); // 第二个参数：矩阵个数，第三个： 行列是否置换
+}
+
 
