@@ -109,8 +109,14 @@ int main()
 	// 生成纹理和对应多级纹理后： 释放内存和解绑纹理对象
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-
-
+	ourShader.use(); // 设置shader属性前需要激活程序
+	// 绑定纹理
+	glActiveTexture(GL_TEXTURE0); // 使用一个纹理时默认激活
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	ourShader.setInt("ourTexture1", 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	ourShader.setInt("ourTexture2", 1);
 
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
 	{
@@ -120,17 +126,13 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // 清除颜色缓冲后需要填入的颜色，是一个状态设置函数
 		glClear(GL_COLOR_BUFFER_BIT); // 清除颜色缓冲，是一个状态使用函数，使得应该清除为上面设置的颜色
 
-		// 绑定纹理
-		glActiveTexture(GL_TEXTURE0); // 使用一个纹理时默认激活
-		glBindTexture(GL_TEXTURE_2D, texture1);
-		ourShader.setInt("ourTexture1", 0);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, texture2);
-		ourShader.setInt("ourTexture2", 1);
-		
-
+		glm::mat4 trans(1.0f);
+		auto r = static_cast<float>(glfwGetTime());
+		std::cout << "r = " << r << std::endl;
+		trans = glm::rotate(trans, r, glm::vec3(0.0f, 0.0f, 1.0f));
+		ourShader.setMatirx4("transform", trans);
 		// Draw
-		ourShader.use(); // 激活着色程序
+		//ourShader.use(); // 激活着色程序
 		glBindVertexArray(VAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 6个点，索引类型为unsigned int, offset = 0
