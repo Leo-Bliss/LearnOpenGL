@@ -76,7 +76,7 @@ int main()
 	// 加载纹理图片
 	const char* filePath = "../Asset/container.jpg";
 	Image image1(filePath);
-	if (image1.loadSuccess())
+	if (image1.loadSuccessfully())
 	{
 		// 纹理对象附加纹理图片
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image1.getWidth(), image1.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image1.getRawIns());
@@ -99,11 +99,11 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	filePath = "../Asset/awesomeface.png";
+	filePath = "../Asset/awesomeface.png"; // 注意这张图带透明值，后面要使用GL_RGBA存储纹理
 	Image image2(filePath);
-	if (image2.loadSuccess())
+	if (image2.loadSuccessfully())
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image2.getWidth(), image2.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image2.getRawIns());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image2.getWidth(), image2.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image2.getRawIns());
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	// 生成纹理和对应多级纹理后： 释放内存和解绑纹理对象
@@ -124,7 +124,7 @@ int main()
 		glActiveTexture(GL_TEXTURE0); // 使用一个纹理时默认激活
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		ourShader.setInt("ourTexture1", 0);
-		glActiveTexture(GL_TEXTURE1); // 使用一个纹理时默认激活
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		ourShader.setInt("ourTexture2", 1);
 		
