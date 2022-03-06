@@ -23,6 +23,7 @@ function(GetRelativeDir relativeDir)
 	set(${relativeDir} ${dir} PARENT_SCOPE)
 endfunction()
 
+LIST(APPEND allSubDir "Camera")
 LIST(APPEND allSubDir "CoordinateSystem")
 LIST(APPEND allSubDir "Texture")
 LIST(APPEND allSubDir "Shader")
