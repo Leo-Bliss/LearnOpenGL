@@ -1,14 +1,17 @@
 ﻿#include "window.h"
 #include "image.h"
 #include "shader.h"
+#include "camera.h"
 #include <iostream>
 #include <vector>
 
-glm::vec3 cameraPos(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+
 float deltaTime = 0.0f; // 存储上一帧渲染所用时间（当前时间戳-上一帧时间戳）
 float lastFrame = 0.0f; // 上一帧时间戳
+
+using Hub::Camera, Hub::Vector3, Hub::CameraMovement;
+Camera camera;
+
 
 // 实现键盘移动摄像机
 void processInput(GLFWwindow *window)
@@ -17,31 +20,27 @@ void processInput(GLFWwindow *window)
 	
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		cameraPos += cameraSpeed * cameraFront;
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		cameraPos += cameraSpeed * cameraFront;
+		camera.processKeyBoard(CameraMovement::FORWORD, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		cameraPos -= cameraSpeed * cameraFront;
+		camera.processKeyBoard(CameraMovement::BACKWORD, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		camera.processKeyBoard(CameraMovement::LEFT, deltaTime);
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+		camera.processKeyBoard(CameraMovement::RIGHT, deltaTime);
 	}
 }
 
 // 鼠标控制摄像机
 bool firstMouse = true;
 glm::vec2 lastPos(400, 300); // window center
-float yaw = -90.0f;
-float pitch = 0.0f;
+
+// todo: 处理异常表现
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS))
@@ -57,38 +56,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	GLfloat xoffset = pos.x - lastPos.x;
 	GLfloat yoffset = lastPos.y - pos.y; // 由于这里y坐标范围从下往上
 	lastPos = pos;
-	GLfloat sensitivity = 0.05f;
-	xoffset *= sensitivity;
-	yoffset *= sensitivity;
-	yaw += xoffset;
-	pitch += yoffset;
-	if (std::fabs(pitch) > 89.0f)
-	{
-		pitch = pitch > 0 ? 89.0f : -89.0f;
-	}
-	glm::vec3 front;
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	cameraFront = glm::normalize(front);
+	camera.processMouseMovement(xpos, ypos);
 }
 
 // 滚轮调整摄像机fov, 实现缩放效果
-float aspect = 45.0f;
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	if (aspect >= 1.0f && aspect <= 85.0f)
-	{
-		aspect -= yoffset;
-	}
-	if (aspect <= 1.0f)
-	{
-		aspect = 1.0f;
-	}
-	if (aspect >= 85.0f)
-	{
-		aspect = 85.0f;
-	}
+	camera.processMouseScroll(yoffset);
 }
 
 int main()
@@ -269,11 +243,11 @@ int main()
 			glDrawArrays(GL_TRIANGLES, 0, 36); // 6 * 2 * 3
 		}
 		
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		auto view = camera.getViewMatrix();
 		ourShader.setMatirx4("view", view);
 
 		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(aspect), 800.0f / 600.0f, 0.1f, 100.0f);
+		projection = glm::perspective(camera.getFov(), 800.0f / 600.0f, 0.1f, 100.0f);
 		ourShader.setMatirx4("projection", projection);
 
 		glBindVertexArray(0);
