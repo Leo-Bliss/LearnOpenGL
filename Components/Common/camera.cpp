@@ -14,7 +14,7 @@ namespace Hub
 		_front(Vector3(0.0f, 0.0f, -1.0f)),
 		_worldUp(Vector3(0.0f, 1.0f, 0.0f)),
 		_moveSpeed(3.0f),
-		_mouseSensitivity(0.1f),
+		_mouseSensitivity(0.05f),
 		_fov(45.0f)
 
 	{
@@ -67,9 +67,9 @@ namespace Hub
 		{
 			_fov = 1.0f;
 		}
-		else if (_fov > 85.0f)
+		else if (_fov > 45.0f)
 		{
-			_fov = 85.0f;
+			_fov = 45.0f;
 		}
 	}
 
