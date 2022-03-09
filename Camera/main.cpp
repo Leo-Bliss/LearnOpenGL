@@ -6,6 +6,8 @@
 #include <vector>
 
 
+int windowWidth = 800;
+int windowHight = 600;
 float deltaTime = 0.0f; // 存储上一帧渲染所用时间（当前时间戳-上一帧时间戳）
 float lastFrame = 0.0f; // 上一帧时间戳
 
@@ -38,15 +40,15 @@ void processInput(GLFWwindow *window)
 
 // 鼠标控制摄像机
 bool firstMouse = true;
-glm::vec2 lastPos(400, 300); // window center
+glm::vec2 lastPos(windowWidth/2.0f, windowHight/2.0f); // window center
 
 // todo: 处理异常表现
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS))
+	/*if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS))
 	{
 		return;
-	}
+	}*/
 	glm::vec2 pos(xpos, ypos);
 	if (firstMouse)
 	{
@@ -65,9 +67,10 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	camera.processMouseScroll(yoffset);
 }
 
+
 int main()
 {
-	Hub::Window hWindow(800, 600);
+	Hub::Window hWindow(windowWidth, windowHight);
 	auto window = hWindow.getGLWindowIns();
 
 	// shader
@@ -247,7 +250,7 @@ int main()
 		ourShader.setMatirx4("view", view);
 
 		glm::mat4 projection;
-		projection = glm::perspective(camera.getFov(), 800.0f / 600.0f, 0.1f, 100.0f);
+		projection = glm::perspective(camera.getFov(), windowWidth/windowHight*1.0f, 0.1f, 100.0f);
 		ourShader.setMatirx4("projection", projection);
 
 		glBindVertexArray(0);
