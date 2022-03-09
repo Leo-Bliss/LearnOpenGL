@@ -97,7 +97,7 @@ namespace Hub
 	{
 		Vector3 front;
 		front.x = std::cos(glm::radians(_yaw)) * std::cos(glm::radians(_pitch));
-		front.y = std::sin(_pitch);
+		front.y = std::sin(glm::radians(_pitch));
 		front.z = std::sin(glm::radians(_yaw)) * std::cos(glm::radians(_pitch));
 		_front = glm::normalize(front);
 		_right = glm::normalize(glm::cross(_front, _worldUp));
