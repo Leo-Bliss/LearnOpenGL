@@ -10,7 +10,7 @@ namespace Hub
 
 	VertexBuffer::~VertexBuffer()
 	{
-
+		glDeleteBuffers(1, &_obj);
 	}
 
 	VertexBuffer::operator GLuint() const
