@@ -21,7 +21,7 @@ namespace Hub
 	class Window
 	{
 	public:
-		Window(int width, int height, std::string name = "Window", unsigned int majorVersion = 3, unsigned int minorVersion = 3);
+		Window(int width = 800, int height = 600, std::string name = "Window", unsigned int majorVersion = 3, unsigned int minorVersion = 3);
 		
 		Status::status_t init();
 		GLFWwindow* getGLWindowIns() const;
