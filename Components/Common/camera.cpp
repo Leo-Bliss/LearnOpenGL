@@ -51,11 +51,12 @@ namespace Hub
 	{
 		xOffset *= _mouseSensitivity;
 		yOffset *= _mouseSensitivity;
-		_yaw += xOffset;
+		_yaw   += xOffset;
 		_pitch += yOffset;
-		if (constrainPitch && std::fabs(_pitch) > 89.0f)
+		if (constrainPitch)
 		{
-			_pitch = _pitch > 0.0f ? 89.0f : -89.0f;
+			if(std::fabs(_pitch) > 89.0f)
+				_pitch = _pitch > 0.0f ? 89.0f : -89.0f;
 		}
 		updateCameraVector();
 	}

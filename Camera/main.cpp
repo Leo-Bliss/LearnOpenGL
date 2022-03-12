@@ -207,8 +207,8 @@ int main()
 
 	// 开启深度测试
 	glEnable(GL_DEPTH_TEST);
-	glfwSetCursorPosCallback(hWindow.getGLWindowIns(), mouse_callback);
-	glfwSetScrollCallback(hWindow.getGLWindowIns(), scroll_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	std::vector<glm::vec3> positions = {
 		{1.0f, 1.0f, -3.0f},
@@ -222,7 +222,7 @@ int main()
 	while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
 	{
 		glfwPollEvents(); // 检查事件触发：比如键盘输入
-		processInput(hWindow.getGLWindowIns());
+		processInput(window);
 		float currentFrame = static_cast<float>(glfwGetTime());
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
