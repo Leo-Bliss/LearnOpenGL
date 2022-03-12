@@ -7,14 +7,14 @@
 namespace Hub
 {
 	Camera::Camera() :
-		_position(Vector3(0.0f, 0.0f, 0.3f)),
+		_position(Vector3(0.0f, 0.0f, 3.0f)),
 		_up(Vector3(0.0f, 1.0f, 0.0f)),
 		_yaw(-90.0f),
 		_pitch(0.0f),
 		_front(Vector3(0.0f, 0.0f, -1.0f)),
 		_worldUp(Vector3(0.0f, 1.0f, 0.0f)),
-		_moveSpeed(3.0f),
-		_mouseSensitivity(0.05f),
+		_moveSpeed(2.5f),
+		_mouseSensitivity(0.1f),
 		_fov(45.0f)
 
 	{
