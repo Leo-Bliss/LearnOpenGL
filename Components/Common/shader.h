@@ -25,7 +25,7 @@ public:
 
 	void setFloat(const GLchar* key, const GLfloat val);
 	void setVec4(const GLchar* key, const glm::vec4& v);
-	void setVec3(const GLchar* key, const glm::vec3 v);
+	void setVec3(const GLchar* key, const glm::vec3& v);
 	void setInt(const GLchar* key, const GLint val);
 	void setMatirx4(const GLchar* key, const glm::mat4& mat);
 };
