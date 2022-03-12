@@ -42,13 +42,12 @@ void processInput(GLFWwindow *window)
 bool firstMouse = true;
 glm::vec2 lastPos(windowWidth/2.0f, windowHight/2.0f); // window center
 
-// todo: 处理异常表现
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	/*if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS))
+	if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS))
 	{
 		return;
-	}*/
+	}
 	glm::vec2 pos(xpos, ypos);
 	if (firstMouse)
 	{
@@ -58,7 +57,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	GLfloat xoffset = pos.x - lastPos.x;
 	GLfloat yoffset = lastPos.y - pos.y; // 由于这里y坐标范围从下往上
 	lastPos = pos;
-	camera.processMouseMovement(xpos, ypos);
+	camera.processMouseMovement(xoffset, yoffset);
 }
 
 // 滚轮调整摄像机fov, 实现缩放效果
