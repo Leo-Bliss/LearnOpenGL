@@ -77,7 +77,7 @@ namespace Hub
 		_position = pos;
 	}
 
-	Hub::Vector3 Camera::getPosition()
+	Vector3 Camera::getPosition()
 	{
 		return _position;
 	}

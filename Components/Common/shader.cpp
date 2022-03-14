@@ -105,6 +105,12 @@ void Shader::setVec3(const GLchar* key, const glm::vec3& v)
 	glUniform3f(keyLocation, v.x, v.y, v.z);
 }
 
+void Shader::setVec3(const GLchar* key, float x, float y, float z)
+{
+	GLint keyLocation = glGetUniformLocation(_programID, key);
+	glUniform3f(keyLocation, x, y, z);
+}
+
 void Shader::setInt(const GLchar* key, const GLint val)
 {
 	GLint keyLocation = glGetUniformLocation(_programID, key);
