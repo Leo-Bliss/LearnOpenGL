@@ -1,13 +1,14 @@
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <algorithm>
 
 
 
 namespace Hub
 {
 	Camera::Camera() :
-		_position(Vector3(0.0f, 0.0f, 3.0f)),
+		_position(Vector3(0.0f, 0.0f, 3.f)),
 		_up(Vector3(0.0f, 1.0f, 0.0f)),
 		_yaw(-90.0f),
 		_pitch(0.0f),
@@ -18,12 +19,17 @@ namespace Hub
 		_fov(45.0f)
 
 	{
-		updateCameraVector();
+		updateCameraVectors();
 	}
 
 	Matrix4 Camera::getViewMatrix()
 	{
 		return glm::lookAt(_position, _position + _front, _up);
+	}
+
+	Matrix4 Camera::getProjectionMatrix(float widthHeightRatio, float nearPlane, float farPlane)
+	{
+		return glm::perspective(glm::radians(_fov), widthHeightRatio, nearPlane, farPlane);
 	}
 
 	void Camera::processKeyBoard(CameraMovement dirction, float deltaTime)
@@ -55,23 +61,15 @@ namespace Hub
 		_pitch += yOffset;
 		if (constrainPitch)
 		{
-			if(std::fabs(_pitch) > 89.0f)
-				_pitch = _pitch > 0.0f ? 89.0f : -89.0f;
+			_pitch = std::clamp(_pitch, -89.f , 89.f);
 		}
-		updateCameraVector();
+		updateCameraVectors();
 	}
 
 	void Camera::processMouseScroll(float yOffset)
 	{
 		_fov -= yOffset;
-		if (_fov < 1.0f)
-		{
-			_fov = 1.0f;
-		}
-		else if (_fov > 45.0f)
-		{
-			_fov = 45.0f;
-		}
+		setFov(_fov);
 	}
 
 	void Camera::setPosition(const Vector3& pos)
@@ -91,15 +89,17 @@ namespace Hub
 
 	void Camera::setFov(float fov)
 	{
-		_fov = fov;
+		_fov = std::clamp(_fov, 1.f, 89.f);
 	}
 
-	void Camera::updateCameraVector()
+	void Camera::updateCameraVectors()
 	{
 		Vector3 front;
-		front.x = std::cos(glm::radians(_yaw)) * std::cos(glm::radians(_pitch));
-		front.y = std::sin(glm::radians(_pitch));
-		front.z = std::sin(glm::radians(_yaw)) * std::cos(glm::radians(_pitch));
+		auto radianYaw = glm::radians(_yaw);
+		auto radianPitch = glm::radians(_pitch);
+		front.x = std::cos(radianYaw) * std::cos(radianPitch);
+		front.y = std::sin(radianPitch);
+		front.z = std::sin(radianYaw) * std::cos(radianPitch);
 		_front = glm::normalize(front);
 		_right = glm::normalize(glm::cross(_front, _worldUp));
 		_up = glm::normalize(glm::cross(_right, _front));

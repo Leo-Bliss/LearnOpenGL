@@ -22,6 +22,7 @@ namespace Hub
 		Camera();
 
 		Matrix4 getViewMatrix();
+		Matrix4 getProjectionMatrix(float widthHeightRatio, float nearPlane = 0.1f, float farPlane = 100.f);
 
 		void processKeyBoard(CameraMovement dirction, float deltaTime);
 		void processMouseMovement(float xOffset, float yOffset, bool constrainPitch = true);
@@ -51,7 +52,7 @@ namespace Hub
 
 
 	private:
-		void updateCameraVector();
+		void updateCameraVectors();
 
 	};
 }
