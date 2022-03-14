@@ -120,10 +120,10 @@ int main()
 
 
 
-	GLuint VAO, VBO;
+	GLuint cubeVAO, VBO;
 
-	glGenVertexArrays(1, &VAO); // 箱子
-	glBindVertexArray(VAO);
+	glGenVertexArrays(1, &cubeVAO);
+	glBindVertexArray(cubeVAO);
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -171,13 +171,13 @@ int main()
 
 		auto model = glm::mat4(1.0f);
 		auto view = camera.getViewMatrix();
-		auto projection = glm::perspective(camera.getFov(), windowWidth/windowHeight*1.0f, 0.1f, 100.0f);
+		auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);
 		
 		lightShader.setMatirx4("model", model);
 		lightShader.setMatirx4("view", view);
 		lightShader.setMatirx4("projection", projection);
 		
-		glBindVertexArray(VAO);
+		glBindVertexArray(cubeVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 
@@ -196,7 +196,7 @@ int main()
 	}
 
 	glDeleteBuffers(1, &VBO);
-	glDeleteVertexArrays(1, &VAO);
+	glDeleteVertexArrays(1, &cubeVAO);
 	glDeleteVertexArrays(1, &lightVAO);
 	glfwTerminate();
 }
