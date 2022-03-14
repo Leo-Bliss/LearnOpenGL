@@ -165,6 +165,10 @@ int main()
 		auto lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 		lightShader.setVec3("objectColor", objColor);
 		lightShader.setVec3("lightColor", lightColor);
+		float lightX = 2.0f * sin(glfwGetTime());
+		float lightY = 0.0f;
+		float lightZ = 1.5f * cos(glfwGetTime());
+		lightPos = glm::vec3(lightX, lightY, lightZ);
 		lightShader.setVec3("lightPos", lightPos);
 		auto viewPos = camera.getPosition();
 		lightShader.setVec3("viewPos", viewPos);
