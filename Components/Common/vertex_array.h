@@ -15,8 +15,10 @@ namespace Hub
 		static SPVertexArray create();
 		~VertexArray();
 		operator GLuint()const;
-		void bindAttribute(const Atrribute& atrribute, const VertexBuffer& buffer,
-			Type::type_t type, uint count, uint stride, intptr_t offset);
+		void bindAttribute(const Atrribute& atrribute, uint count, const VertexBuffer& buffer,
+			Type::type_t type, uint stride, intptr_t offset);
+		void bindElements(const VertexBuffer& element);
+		void bindTransformFeedback(uint index, const VertexBuffer& buffer);
 
 	private:
 		VertexArray();
