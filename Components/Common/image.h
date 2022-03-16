@@ -21,6 +21,7 @@ namespace Hub
 		const unsigned char* getRawIns() const { return _imageIns; }
 		bool loadSuccessfully() { return _imageIns != nullptr; }
 
+		int getChannels() { return _channels; }
 
 	private:
 		int _width;
