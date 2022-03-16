@@ -10,23 +10,26 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-class Shader
+namespace Hub
 {
-public:
-	GLuint _programID;
+	class Shader
+	{
+	public:
+		GLuint _programID;
 
-	// 构造器读取并构建 着色器
-	Shader(const GLchar* vsPath, const GLchar* fsPath);
-	// 使用程序
-	void use();
+		// 构造器读取并构建 着色器
+		Shader(const GLchar* vsPath, const GLchar* fsPath);
+		// 使用程序
+		void use();
 
-	void checkShaderCompile(const GLuint shader, const GLchar* filePath);
-	void checkProgramLink();
+		void checkShaderCompile(const GLuint shader, const GLchar* filePath);
+		void checkProgramLink();
 
-	void setFloat(const GLchar* key, const GLfloat val);
-	void setVec4(const GLchar* key, const glm::vec4& v);
-	void setVec3(const GLchar* key, const glm::vec3& v);
-	void setVec3(const GLchar* key, float x, float y, float z);
-	void setInt(const GLchar* key, const GLint val);
-	void setMatirx4(const GLchar* key, const glm::mat4& mat);
-};
+		void setFloat(const GLchar* key, const GLfloat val);
+		void setVec4(const GLchar* key, const glm::vec4& v);
+		void setVec3(const GLchar* key, const glm::vec3& v);
+		void setVec3(const GLchar* key, float x, float y, float z);
+		void setInt(const GLchar* key, const GLint val);
+		void setMatirx4(const GLchar* key, const glm::mat4& mat);
+	};
+}
