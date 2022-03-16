@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.2)
 project(Components)
 option(GROUP_BY_EXPLORER ON)
 
-LIST(APPEND ComponentAllSubDir "Math")
+#LIST(APPEND ComponentAllSubDir "Math")
 #LIST(APPEND ComponentAllSubDir "Shader")
 LIST(APPEND ComponentAllSubDir "Common")
 LIST(APPEND ComponentAllSubDir "Window")
