@@ -1,26 +1,10 @@
 #pragma once
 #include "utils.h"
 #include "image.h"
-
-
 #include <memory>
 
 namespace Hub
 {
-	//// Internal texture formats
-	//namespace InternalFormat 
-	//{
-	//	enum internal_format_t
-	//	{
-	//		Red = GL_RED,
-	//		RGB = GL_RGB,
-	//		RGBA = GL_RGBA,
- //           // ...
-
-	//	};
-	//}
-
-	// Texture data formats == Internal texture formats
 	namespace Format
 	{
 		enum format_t
@@ -32,23 +16,6 @@ namespace Hub
 			BGRA = GL_BGRA
 		};
 	}
-
-    // // Texture data types == untils: Type
-    //namespace DataType
-    //{
-    //    enum data_type_t
-    //    {
-    //        Byte = GL_BYTE,
-    //        UnsignedByte = GL_UNSIGNED_BYTE,
-    //        Short = GL_SHORT,
-    //        UnsignedShort = GL_UNSIGNED_SHORT,
-    //        Int = GL_INT,
-    //        UnsignedInt = GL_UNSIGNED_INT,
-    //        Float = GL_FLOAT,
-    //        Double = GL_DOUBLE,
-    //        // ...
-    //    };
-    //}
 
     // Wrapping types
     namespace Wrapping
