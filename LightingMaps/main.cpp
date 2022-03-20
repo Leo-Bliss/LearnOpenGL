@@ -1,5 +1,6 @@
 ﻿#include "window.h"
 #include "image.h"
+#include "texture.h"
 #include "shader.h"
 #include "camera.h"
 #include "vertex_array.h"
@@ -120,50 +121,31 @@ namespace Hub
 			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
 			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 		};
-		GLuint diffuseMap;
-		glGenTextures(1, &diffuseMap);
-		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		const char* filePath = "../Asset/container2.png";
-		Image image(filePath);
-		if (image.loadSuccessfully())
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.getWidth(), image.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.getRawIns());
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		glBindTexture(GL_TEXTURE_2D, 0);
+		auto image1 = Image::create(filePath);
+		auto diffuseMap = Texture::create(image1);
+		diffuseMap->setWrapping(Wrapping::axis_t::S, Wrapping::Repeat);
+		diffuseMap->setWrapping(Wrapping::axis_t::T, Wrapping::Repeat);
+		diffuseMap->setFilter(Filter::operator_t::Min, Filter::filter_t::LinearMipmapLinear);
+		diffuseMap->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
 
-		GLuint specularMap;
-		glGenTextures(1, &specularMap);
-		glBindTexture(GL_TEXTURE_2D, specularMap);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		filePath = "../Asset/container2_specular.png";
-		Image image2(filePath);
-		if (image.loadSuccessfully())
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image2.getWidth(), image2.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image2.getRawIns());
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		glBindTexture(GL_TEXTURE_2D, 0);
+		auto image2 = Image::create(filePath);
+		auto specularMap = Texture::create(image2);
+		specularMap->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::Repeat);
+		specularMap->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::Repeat);
+		specularMap->setFilter(Filter::operator_t::Min, Filter::filter_t::LinearMipmapLinear);
+		specularMap->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
 
 		auto VBO = VertexBuffer::create(vertices, sizeof(vertices), BufferUsage::StaticDraw);
 		auto cubeVAO = VertexArray::create();
-		cubeVAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0 * sizeof(GLfloat));
-		cubeVAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(GLfloat));
-		cubeVAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(GLfloat));
+		cubeVAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0 * sizeof(float));
+		cubeVAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
+		cubeVAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
 
 		auto lightVAO = VertexArray::create();
-		lightVAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0 * sizeof(GLfloat));
+		lightVAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0 * sizeof(float));
 
 		glEnable(GL_DEPTH_TEST);
 		glfwSetCursorPosCallback(window, mouse_callback);
@@ -183,10 +165,10 @@ namespace Hub
 
 			lightShader.use();
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, diffuseMap);
+			glBindTexture(GL_TEXTURE_2D, *diffuseMap);
 			lightShader.setInt("material.diffuse", 0);
 			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, specularMap);
+			glBindTexture(GL_TEXTURE_2D, *specularMap);
 			lightShader.setInt("material.specular", 1);
 
 
