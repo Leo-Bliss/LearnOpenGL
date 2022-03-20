@@ -1,32 +1,33 @@
 #pragma  once
-// popular single header image loading library 
-#define STB_IMAGE_IMPLEMENTATION // must: only contains the relevant definition source code
-#include "stb/stb_image.h"
+
+#include <memory>
 
 namespace Hub
 {
+	class Image;
+	using SPImage = std::shared_ptr<Image>;
+
 	class Image
 	{
 	public:
-		Image(const char* filePath)
-		{
-			_imageIns = stbi_load(filePath, &_width, &_height, &_channels, 0);
-		}
-		~Image()
-		{
-			stbi_image_free(_imageIns);
-		}
-		int getWidth()const { return _width; }
-		int getHeight()const { return _height; }
-		const unsigned char* getRawIns() const { return _imageIns; }
-		bool loadSuccessfully() { return _imageIns != nullptr; }
+		~Image();
+		
+		static SPImage create();
+		static SPImage create(const char* filePath);
 
-		int getChannels() { return _channels; }
+		void load(const char* filePath);
+		int getWidth()const;
+		int getHeight()const;
+		const unsigned char* getData() const;
+		int getChannels() const;
 
 	private:
-		int _width;
-		int _height;
-		int _channels;
-		unsigned char* _imageIns;
+		Image() = default;
+		Image(const char* filePath);
+
+		int _width = 0;
+		int _height = 0;
+		int _channels = 4;
+		unsigned char* _data = nullptr;
 	};
 }
