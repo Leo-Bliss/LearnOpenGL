@@ -10,12 +10,14 @@ struct Material
 
 struct Light
 {
-	//vec3 position;
-	vec3 direction;
+	vec3 position;
 
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+	float constant;
+	float linear;
+	float quadratic;
 };
 
 out vec4 Fragcolor;
@@ -30,12 +32,15 @@ uniform Light light;
 
 void main()
 {
+	float distance = length(light.position - FragPos);
+	float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
 	// 环境光照
 	vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
 
 	// 漫反射光照
 	vec3 norm = normalize(Normal);
-	vec3 lightDir =  normalize(-light.direction); //normalize(light.position - FragPos); // 片段位置指向光源
+	vec3 lightDir = normalize(light.position - FragPos); // 片段位置指向光源
 	// 角度大于90时dot为负数，负数散射因子是没有意义的，所以取max
 	float diff = max(dot(norm, lightDir), 0.0f); 
 	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
@@ -50,7 +55,7 @@ void main()
 	vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
 
 	// 光照影响相加
-	vec3 result = ambient + diffuse + specular;
+	vec3 result = (ambient + diffuse + specular) * attenuation;
 	Fragcolor = vec4(result, 1.0f);
 	
 }

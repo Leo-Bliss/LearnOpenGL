@@ -187,14 +187,15 @@ namespace Hub
 			lightShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
 			lightShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-			//lightPos.y = 1.5;
 			/*lightPos.x = 2.0f * sin(glfwGetTime());
 			lightPos.y = 0.0f;
 			lightPos.z = 1.5f * cos(glfwGetTime());*/
-			//lightShader.setVec3("light.position", lightPos);
-			lightShader.setVec3("light.direction", -0.2f, -1.0f, -0.3f);
+			lightShader.setVec3("light.position", lightPos);
 			auto viewPos = camera.getPosition();
 			lightShader.setVec3("viewPos", viewPos);
+			lightShader.setFloat("light.constant", 1.0f);
+			lightShader.setFloat("light.linear", 0.022f);
+			lightShader.setFloat("light.quadratic", 0.019f);
 
 			lightShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
 			lightShader.setFloat("material.shininess", 64.f);
@@ -221,7 +222,7 @@ namespace Hub
 			
 			glBindVertexArray(0);
 
-			/*lampShader.use();
+			lampShader.use();
 			lampShader.setMatirx4("view", view);
 			lampShader.setMatirx4("projection", projection);
 			model = glm::mat4(1.0f);
@@ -230,7 +231,7 @@ namespace Hub
 			lampShader.setMatirx4("model", model);
 			glBindVertexArray(*lightVAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glBindVertexArray(0);*/
+			glBindVertexArray(0);
 
 			glfwSwapBuffers(window);
 		}
