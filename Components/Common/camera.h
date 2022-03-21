@@ -34,6 +34,8 @@ namespace Hub
 		float getFov();
 		void setFov(float fov);
 
+		Vector3 getFront() const;
+
 		// 摄像机属性
 		Vector3 _position;
 		Vector3 _front;

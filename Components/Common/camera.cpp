@@ -92,6 +92,11 @@ namespace Hub
 		_fov = std::clamp(_fov, 1.f, 89.f);
 	}
 
+	Vector3 Camera::getFront() const
+	{
+		return _front;
+	}
+
 	void Camera::updateCameraVectors()
 	{
 		Vector3 front;
