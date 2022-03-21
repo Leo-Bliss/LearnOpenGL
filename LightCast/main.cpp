@@ -190,9 +190,15 @@ namespace Hub
 			/*lightPos.x = 2.0f * sin(glfwGetTime());
 			lightPos.y = 0.0f;
 			lightPos.z = 1.5f * cos(glfwGetTime());*/
-			lightShader.setVec3("light.position", lightPos);
+			
 			auto viewPos = camera.getPosition();
 			lightShader.setVec3("viewPos", viewPos);
+			lightShader.setVec3("light.position", viewPos);
+			auto spotDir = camera.getFront();
+			lightShader.setVec3("light.direction", spotDir);
+			lightShader.setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+			lightShader.setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
+
 			lightShader.setFloat("light.constant", 1.0f);
 			lightShader.setFloat("light.linear", 0.022f);
 			lightShader.setFloat("light.quadratic", 0.019f);
