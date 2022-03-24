@@ -40,7 +40,6 @@ void main()
 	vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
 
 	// 镜面光照
-	float specularStrength = 0.5; // 镜面强度
 	vec3 viewDir = normalize(viewPos -FragPos);
 	vec3 reflectDir = reflect(-lightDir, norm); // 第一个需要光源指向片段位置的向量
 	// 计算镜面亮度分量
