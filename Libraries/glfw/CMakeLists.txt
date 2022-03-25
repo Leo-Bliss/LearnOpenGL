@@ -175,7 +175,7 @@ if (GLFW_INSTALL)
                           "${CMAKE_COMMAND}" -P
                           "${GLFW_BINARY_DIR}/cmake_uninstall.cmake")
         #set_target_properties(uninstall PROPERTIES FOLDER "GLFW3")
-        set_target_properties(uninstall PROPERTIES FOLDER "Libraries")
+        set_target_properties(uninstall PROPERTIES FOLDER "Other")
     endif()
 endif()
 

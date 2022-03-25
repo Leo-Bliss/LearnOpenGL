@@ -28,7 +28,7 @@ add_custom_target(update_mappings
     VERBATIM)
 
 #set_target_properties(update_mappings PROPERTIES FOLDER "GLFW3")
-set_target_properties(update_mappings PROPERTIES FOLDER "Libraries")
+set_target_properties(update_mappings PROPERTIES FOLDER "Other")
 
 if (GLFW_BUILD_COCOA)
     target_compile_definitions(glfw PRIVATE _GLFW_COCOA)
