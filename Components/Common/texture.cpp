@@ -23,6 +23,12 @@ namespace Hub
 		return SPTexture(new Texture(image));
 	}
 
+	Hub::SPTexture Texture::create(const char* filePath)
+	{
+		auto image = Image::create(filePath);
+		return SPTexture(new Texture(image));
+	}
+
 	void Texture::setWrapping(Wrapping::axis_t axis, Wrapping::wrapping_t wrapping)
 	{
 		glBindTexture(GL_TEXTURE_2D, _obj);

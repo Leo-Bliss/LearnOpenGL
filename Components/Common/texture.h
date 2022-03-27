@@ -66,6 +66,7 @@ namespace Hub
 
 		static SPTexture create();
 		static SPTexture create(const SPImage image);
+        static SPTexture create(const char* filePath);
         void setWrapping(Wrapping::axis_t axis, Wrapping::wrapping_t wrapping);
         void setFilter(Filter::operator_t op, Filter::filter_t flt);
         void setBorderColor(const Color& color);
