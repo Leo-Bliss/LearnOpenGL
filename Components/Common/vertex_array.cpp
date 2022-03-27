@@ -25,7 +25,7 @@ namespace Hub
 		glVertexAttribPointer(atrribute, count, type, GL_FALSE, stride, (GLvoid*)(offset));
 	}
 
-	void VertexArray::bindElements(const VertexBuffer& element)
+	void VertexArray::bindElements(const ElementBuffer& element)
 	{
 		glBindVertexArray(_obj);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, element);
