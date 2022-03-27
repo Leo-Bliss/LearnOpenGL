@@ -1,11 +1,12 @@
 #pragma once
 #include "utils.h"
-#include "define.h"
 #include "buffer.h"
+#include <memory>
 
 namespace Hub
 {
-	SharedPtrDefine(ElementBuffer);
+	class ElementBuffer;
+	using SPElementBuffer = std::shared_ptr<ElementBuffer>;
 
 	class ElementBuffer
 	{
