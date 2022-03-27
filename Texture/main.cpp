@@ -1,5 +1,8 @@
 ﻿#include "window.h"
 #include "image.h"
+#include "vertex_array.h"
+#include "vertex_buffer.h"
+#include "element_buffer.h"
 #include "texture.h"
 #include "shader.h"
 #include <iostream>
@@ -28,36 +31,14 @@ namespace Hub
 			2,3,0
 		};
 
-		GLuint VBO, VAO; // VBO:作为顶点缓冲对象ID; VAO:顶点数组对象ID
-		GLuint EBO;
-
-		glGenVertexArrays(1, &VAO); // 生成顶点数组对象,包含了绘制某种图形所需要的所有状态
-		glGenBuffers(1, &VBO); // 生成顶点缓冲对象
-		glGenBuffers(1, &EBO);
-
-		// 绑定VAO
-		glBindVertexArray(VAO);
-
-		// 绑定缓冲类型
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		// 复制顶点数据到缓冲
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-		// 位置属性
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-		glEnableVertexAttribArray(0);
-
-		// 颜色属性
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat))); // 前面3个为位置，偏移3*..
-		glEnableVertexAttribArray(1);
-
-		// 纹理属性
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLfloat*)(6 * sizeof(GLfloat)));
-		glEnableVertexAttribArray(2);
-
+		auto VAO = VertexArray::create();
+		auto VBO = VertexBuffer::create(vertices, sizeof(vertices), BufferUsage::StaticDraw);
+		auto EBO = ElementBuffer::create(indices, sizeof(indices), BufferUsage::StaticDraw);
+		VAO->bindElements(*EBO);
+		VAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0 * sizeof(float));
+		VAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
+		VAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
+		
 		// unbind
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		// 解绑VAO
@@ -104,7 +85,7 @@ namespace Hub
 			ourShader.setMatirx4("transform", trans);
 			// Draw
 			//ourShader.use(); // 激活着色程序
-			glBindVertexArray(VAO);
+			glBindVertexArray(*VAO);
 			//glDrawArrays(GL_TRIANGLES, 0, 3); // 0: 顶点起始索引，3绘制个数
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 6个点，索引类型为unsigned int, offset = 0
 			glBindVertexArray(0);
@@ -113,10 +94,6 @@ namespace Hub
 			glfwSwapBuffers(window);
 
 		}
-		// 结束后回收所有分配的资源
-		glDeleteVertexArrays(1, &VAO);
-		glDeleteBuffers(1, &VBO);
-		glDeleteBuffers(1, &EBO);
 		glfwTerminate();
 	}
 }
