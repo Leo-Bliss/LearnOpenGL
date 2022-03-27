@@ -29,6 +29,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Components")
 target_include_directories(${PROJECT_NAME} PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/
 	${PROJECT_LIBRARIES_DIR}/../
+#	${PROJECT_LIBRARIES_DIR}/assimp/
 #	${PROJECT_LIBRARIES_DIR}/glad/
 #	${PROJECT_LIBRARIES_DIR}/glfw/
 #	${PROJECT_LIBRARIES_DIR}/glm/
@@ -39,4 +40,5 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
 	glad
 	glfw
 	glm
+	assimp
 )	

@@ -23,6 +23,7 @@ function(GetRelativeDir relativeDir)
 	set(${relativeDir} ${dir} PARENT_SCOPE)
 endfunction()
 
+LIST(APPEND allSubDir "Model")
 LIST(APPEND allSubDir "LightMultiple")
 LIST(APPEND allSubDir "LightCast")
 LIST(APPEND allSubDir "LightingMaps")
