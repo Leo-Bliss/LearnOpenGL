@@ -25,15 +25,14 @@ namespace Hub
 		};
 	}
 
-	using namespace MeshData;
 	class Mesh
 	{
 	public:
-		std::vector<Vertex> vertices;
+		std::vector<MeshData::Vertex> vertices;
 		std::vector<unsigned int> indices;
-		std::vector<Texture> textures;
+		std::vector<MeshData::Texture> textures;
 
-		Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+		Mesh(std::vector<MeshData::Vertex> vertices, std::vector<unsigned int> indices, std::vector<MeshData::Texture> textures);
 
 		void draw(Shader& shader);
 

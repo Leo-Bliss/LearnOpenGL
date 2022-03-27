@@ -1,7 +1,7 @@
 #include "mesh.h"
 namespace Hub
 {
-	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures)
+	Mesh::Mesh(std::vector<MeshData::Vertex> vertices, std::vector<unsigned int> indices, std::vector<MeshData::Texture> textures)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
@@ -26,7 +26,7 @@ namespace Hub
 			{
 				number = std::to_string(specularNr++);
 			}
-			shader.setFloat(("material." + name + number).c_str(), i);
+			shader.setInt((name + number).c_str(), i);
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 		glActiveTexture(GL_TEXTURE0);
@@ -40,12 +40,12 @@ namespace Hub
 	void Mesh::setupMesh()
 	{
 		VAO = VertexArray::create();
-		VBO = VertexBuffer::create(&vertices[0], vertices.size() * sizeof(Vertex), BufferUsage::StaticDraw);
+		VBO = VertexBuffer::create(&vertices[0], vertices.size() * sizeof(MeshData::Vertex), BufferUsage::StaticDraw);
 		EBO = ElementBuffer::create(&indices[0], indices.size() * sizeof(unsigned int), BufferUsage::StaticDraw);
 		VAO->bindElements(*EBO);
-		VAO->bindAttribute(0, 3, *VBO, Type::Float, sizeof(Vertex), offsetof(Vertex, position));
-		VAO->bindAttribute(1, 3, *VBO, Type::Float, sizeof(Vertex), offsetof(Vertex, normal));
-		VAO->bindAttribute(2, 2, *VBO, Type::Float, sizeof(Vertex), offsetof(Vertex, texCoords));
+		VAO->bindAttribute(0, 3, *VBO, Type::Float, sizeof(MeshData::Vertex), offsetof(MeshData::Vertex, position));
+		VAO->bindAttribute(1, 3, *VBO, Type::Float, sizeof(MeshData::Vertex), offsetof(MeshData::Vertex, normal));
+		VAO->bindAttribute(2, 2, *VBO, Type::Float, sizeof(MeshData::Vertex), offsetof(MeshData::Vertex, texCoords));
 		glBindVertexArray(0);
 	}
 
