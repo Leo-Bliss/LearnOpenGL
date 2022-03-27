@@ -1,5 +1,6 @@
 #pragma once
+#include <memory>
 
-#define SPDefine(className)								\
+#define SharedPtrDefine(className)						\
 class className;										\
 using SP##className = std::shared_ptr<className>;		\

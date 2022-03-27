@@ -1,13 +1,12 @@
 #pragma once
 #include "utils.h"
+#include "define.h"
 #include "vertex_buffer.h"
-#include <memory>
 
 
 namespace Hub
 {
-	class VertexArray;
-	using SPVertexArray = std::shared_ptr<VertexArray>;
+	SharedPtrDefine(VertexArray);
 
 	class VertexArray
 	{

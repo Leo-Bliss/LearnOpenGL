@@ -1,6 +1,6 @@
 #pragma once
 #include "utils.h"
-#include <memory>
+#include "define.h"
 
 namespace Hub
 {
@@ -20,8 +20,7 @@ namespace Hub
 		};
 	}
 
-	class VertexBuffer;
-	using SPVertexBuffer = std::shared_ptr<VertexBuffer>;
+	SharedPtrDefine(VertexBuffer);
 
 	class VertexBuffer
 	{
