@@ -4,6 +4,7 @@ project(Libraries)
 LIST(APPEND LibrariesSubDir "glad")
 LIST(APPEND LibrariesSubDir "glfw")
 LIST(APPEND LibrariesSubDir "glm")
+LIST(APPEND LibrariesSubDir "assimp")
 
 set(PROJECT_LIBRARIES_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 foreach(dirname ${LibrariesSubDir}) 
