@@ -8,7 +8,7 @@
 namespace Hub
 {
 	Camera::Camera() :
-		_position(Vector3(0.0f, 0.0f, 3.f)),
+		_position(Vector3(0.0f, 0.0f, 3.0f)),
 		_up(Vector3(0.0f, 1.0f, 0.0f)),
 		_yaw(-90.0f),
 		_pitch(0.0f),
@@ -35,21 +35,20 @@ namespace Hub
 	void Camera::processKeyBoard(CameraMovement dirction, float deltaTime)
 	{
 		float velocity = _moveSpeed * deltaTime;
-		if (dirction == CameraMovement::FORWORD)
+		switch (dirction)
 		{
+		case CameraMovement::FORWORD:
 			_position += _front * velocity;
-		}
-		if (dirction == CameraMovement::BACKWORD)
-		{
+			break;
+		case CameraMovement::BACKWORD: 
 			_position -= _front * velocity;
-		}
-		if (dirction == CameraMovement::LEFT)
-		{
+			break;
+		case CameraMovement::LEFT:
 			_position -= _right * velocity;
-		}
-		if (dirction == CameraMovement::RIGHT)
-		{
+			break;
+		case CameraMovement::RIGHT:
 			_position += _right * velocity;
+			break;
 		}
 	}
 
