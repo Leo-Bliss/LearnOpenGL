@@ -2,7 +2,7 @@
 #include "model.h"
 #include "shader.h"
 #include "camera.h"
-#include "stb/stb_image.h"
+#include "image.h"
 #include <iostream>
 
 namespace Hub
@@ -42,6 +42,7 @@ namespace Hub
 	bool firstMouse = true;
 	glm::vec2 lastPos(windowWidth / 2.0f, windowHeight / 2.0f); // window center
 
+	// strangely: todo fix
 	void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		if (!(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS))
@@ -70,7 +71,7 @@ namespace Hub
 		Hub::Window hWindow(800, 600);
 		auto window = hWindow.getGLWindowIns();
 
-		stbi_set_flip_vertically_on_load(true);
+		Image::filpVerticallyOnLoadEnable(true);
 
 		// shader
 		Shader ourShader("./shader/shader.vs", "./shader/shader.fs");

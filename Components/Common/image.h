@@ -14,6 +14,7 @@ namespace Hub
 		
 		static SPImage create();
 		static SPImage create(const char* filePath);
+		static void filpVerticallyOnLoadEnable(bool val);
 
 		void load(const char* filePath);
 		int getWidth()const;

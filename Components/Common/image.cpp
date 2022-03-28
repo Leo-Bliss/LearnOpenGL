@@ -30,6 +30,11 @@ namespace Hub
 		return SPImage(new Image(filePath));
 	}
 
+	void Image::filpVerticallyOnLoadEnable(bool val)
+	{
+		stbi_set_flip_vertically_on_load(val);
+	}
+
 	void Image::load(const char* filePath)
 	{
 		_data = stbi_load(filePath, &_width, &_height, &_channels, 0);
