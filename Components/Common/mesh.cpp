@@ -27,7 +27,7 @@ namespace Hub
 				number = std::to_string(specularNr++);
 			}
 			shader.setInt((name + number).c_str(), i);
-			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+			glBindTexture(GL_TEXTURE_2D, *(textures[i].ptr));
 		}
 		glActiveTexture(GL_TEXTURE0);
 

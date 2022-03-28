@@ -4,6 +4,7 @@
 #include "vertex_array.h"
 #include "vertex_buffer.h"
 #include "element_buffer.h"
+#include "texture.h"
 #include <string>
 #include <vector>
 
@@ -20,7 +21,8 @@ namespace Hub
 
 		struct Texture
 		{
-			unsigned int id;
+			/*unsigned int id;*/
+			SPTexture ptr;
 			std::string type;
 			std::string path;
 		};
