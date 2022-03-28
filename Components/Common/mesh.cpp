@@ -33,7 +33,9 @@ namespace Hub
 
 		// draw mesh
 		glBindVertexArray(*VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNALED, 0);
+		glCheckError();
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		glCheckError();
 		glBindVertexArray(0);
 	}
 
