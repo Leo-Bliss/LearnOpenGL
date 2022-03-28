@@ -79,16 +79,17 @@ namespace Hub
 		Model ourModel(filePath);
 		
 		glEnable(GL_DEPTH_TEST);
+		glfwSetCursorPosCallback(window, mouse_callback);
+		glfwSetScrollCallback(window, scroll_callback);
 
-
-		while (!glfwWindowShouldClose(window)) // 使图像不立即关闭
+		while (!glfwWindowShouldClose(window))
 		{
 			GLfloat currentFrame = glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
-			glfwPollEvents(); // 检查事件触发：比如键盘输入
+			glfwPollEvents();
+			processInput(window);
 
-			// 渲染指令
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f); 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
@@ -97,7 +98,7 @@ namespace Hub
 			auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);;
 			auto view = camera.getViewMatrix();
 			auto model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(0.f, -1.75f, 0.f));
+			model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
 			model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 			ourShader.setMatirx4("projection", projection);
 			ourShader.setMatirx4("view", view);
