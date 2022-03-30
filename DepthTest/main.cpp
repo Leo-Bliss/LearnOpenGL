@@ -157,7 +157,7 @@ namespace Hub
 
 
 		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_ALWAYS);
+		glDepthFunc(GL_LESS);
 
 		shader.use();
 		shader.setInt("texture1", 0);
