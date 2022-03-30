@@ -45,16 +45,14 @@ namespace Hub
 		glBindVertexArray(0);
 
 		const char* filePath = "../Asset/container.jpg";
-		auto image1 = Image::create(filePath);
-		auto texture1 = Texture::create(image1);
+		auto texture1 = Texture::create(filePath);
 		texture1->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::MirroredRepeat);
 		texture1->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::MirroredRepeat);
 		texture1->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
 		texture1->setFilter(Filter::operator_t::Min, Filter::filter_t::Linear);
 		
 		filePath = "../Asset/awesomeface.png"; 
-		auto image2 = Image::create(filePath);
-		auto texture2 = Texture::create(image2);
+		auto texture2 = Texture::create(filePath);
 		texture2->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::MirroredRepeat);
 		texture2->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::MirroredRepeat);
 		texture2->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
