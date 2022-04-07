@@ -4,6 +4,8 @@
 #include "vertex_array.h"
 #include "vertex_buffer.h"
 #include "texture.h"
+#include "gmath.h"
+#include <map>
 
 
 namespace Hub
@@ -135,7 +137,7 @@ namespace Hub
 		std::vector<glm::vec3> vegetation = {
 			{-1.5f, 0.0f, -0.48f},
 			{1.5f, 0.0f, 0.51f},
-			{0.0f, 0.0f, 0.7f},
+			{0.0f, 0.0f, 0.9f},
 			{0.8f, 0.0f, 0.7f},
 			{-0.3f, 0.0f, -2.3f},
 			{0.5f, 0.0f, -0.6f},
@@ -176,7 +178,7 @@ namespace Hub
 		filePath = "../Asset/container.jpg";
 		auto planeTexture = Texture::create(filePath);
 		Image::filpVerticallyOnLoadEnable(true);
-		filePath = "../Asset/grass.png";
+		filePath = "../Asset/blending_transparent_window.png";
 		auto grassTexture = Texture::create(filePath);
 
 		auto setTextureConfig = [](SPTexture& t)
@@ -197,6 +199,8 @@ namespace Hub
 
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		shader.use();
 		shader.setInt("texture1", 0);
@@ -245,16 +249,23 @@ namespace Hub
 			shader.setMatirx4("model", glm::mat4(1.0f));
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 
-			// grass
+			// transparent objects sort by distance
+			std::map<float, glm::vec3> distancePosMap;
+			for (auto pos : vegetation)
+			{
+				auto dis2 = Hub::length2(camera.getPosition() - pos);
+				distancePosMap[dis2] = pos;
+			}
+			
 			grassShader.use();
 			grassShader.setMatirx4("view", view);
 			grassShader.setMatirx4("projection", projection);
 			glBindVertexArray(*grassVAO);
 			glBindTexture(GL_TEXTURE_2D,*grassTexture);
-			for (size_t i = 0; i < vegetation.size(); ++i)
+			for (auto it = distancePosMap.rbegin(); it != distancePosMap.rend(); ++it)
 			{
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, vegetation[i]);
+				model = glm::translate(model, it->second);
 				grassShader.setMatirx4("model", model);
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			}
