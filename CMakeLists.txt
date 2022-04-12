@@ -22,6 +22,8 @@ function(GetRelativeDir relativeDir)
 	STRING(SUBSTRING ${CMAKE_CURRENT_SOURCE_DIR} ${strLength} -1 dir)
 	set(${relativeDir} ${dir} PARENT_SCOPE)
 endfunction()
+
+LIST(APPEND allSubDir "FrameBuffer")
 LIST(APPEND allSubDir "FaceCull")
 LIST(APPEND allSubDir "Blending")
 LIST(APPEND allSubDir "StencilTest")
