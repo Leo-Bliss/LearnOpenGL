@@ -45,7 +45,7 @@ void main()
     vec3 color = vec3(0.0);
     for(int i = 0; i < 9; ++i)
     {
-        sampleTex[i] = texture(screenTexture, TexCoords.st + offsets[i]).grb;
+        sampleTex[i] = texture(screenTexture, TexCoords.st + offsets[i]).rgb;
         color += sampleTex[i] * kernel[i];
     }
     FragColor = vec4(color, 1.0);
