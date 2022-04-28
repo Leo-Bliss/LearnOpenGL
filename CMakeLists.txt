@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2)	
+﻿cmake_minimum_required(VERSION 3.2)	
 set(CMAKE_CXX_STANDARD 20)
 project(OpenGLDemos)
 
@@ -22,7 +22,7 @@ function(GetRelativeDir relativeDir)
 	STRING(SUBSTRING ${CMAKE_CURRENT_SOURCE_DIR} ${strLength} -1 dir)
 	set(${relativeDir} ${dir} PARENT_SCOPE)
 endfunction()
-
+LIST(APPEND allSubDir "CubeMap")
 LIST(APPEND allSubDir "FrameBuffer")
 LIST(APPEND allSubDir "FaceCull")
 LIST(APPEND allSubDir "Blending")
