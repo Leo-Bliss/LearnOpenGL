@@ -15,7 +15,7 @@ namespace Hub
 
 	Hub::SPTexture Texture::create()
 	{
-		return SPTexture(new Texture());
+		return SPTexture(new Texture(Hub::texture_t::Texture2D));
 	}
 
 	SPTexture Texture::create(const SPImage image)
@@ -29,18 +29,23 @@ namespace Hub
 		return SPTexture(new Texture(image));
 	}
 
+	SPTexture Texture::create(texture_t type)
+	{
+		return SPTexture(new Texture(type));
+	}
+
 	void Texture::setWrapping(Wrapping::axis_t axis, Wrapping::wrapping_t wrapping)
 	{
-		glBindTexture(GL_TEXTURE_2D, _obj);
-		glTexParameteri(GL_TEXTURE_2D, axis, wrapping);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(_textureType, _obj);
+		glTexParameteri(_textureType, axis, wrapping);
+		glBindTexture(_textureType, 0);
 	}
 
 	void Texture::setFilter(Filter::operator_t op, Filter::filter_t flt)
 	{
-		glBindTexture(GL_TEXTURE_2D, _obj);
-		glTexParameteri(GL_TEXTURE_2D, op, flt);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glBindTexture(_textureType, _obj);
+		glTexParameteri(_textureType, op, flt);
+		glBindTexture(_textureType, 0);
 	}
 
 	void Texture::setBorderColor(const Color& color)
@@ -64,7 +69,23 @@ namespace Hub
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	Texture::Texture()
+	void Texture::cubeMapImage2D(const std::vector<std::string>& faces)
+	{
+		assert(faces.size() <= 6);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _obj);
+		for (size_t i = 0; i < faces.size(); ++i)
+		{
+			const auto& filePath = faces[i];
+			auto image = Image::create(filePath.c_str());
+			Format::format_t format = getDefaultFormat(image->getChannels());
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, 
+				image->getWidth(), image->getHeight(), 0, format, 
+				Type::UnsignedByte, image->getData());
+		}
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
+	Texture::Texture(texture_t type = Texture2D):_textureType(type)
 	{
 		glGenTextures(1, &_obj);
 	}
