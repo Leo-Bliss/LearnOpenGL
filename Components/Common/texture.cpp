@@ -71,7 +71,7 @@ namespace Hub
 
 	void Texture::cubeMapImage2D(const std::vector<std::string>& faces)
 	{
-		assert(faces.size() <= 6);
+		assert(faces.size() == 6);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, _obj);
 		for (size_t i = 0; i < faces.size(); ++i)
 		{
