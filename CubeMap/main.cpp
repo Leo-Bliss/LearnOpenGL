@@ -76,48 +76,48 @@ namespace Hub
 
 		//cube
 		float cubeVertices[] = {
-		 // positions          // texture Coords
-		 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		  0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		 -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		// position           // normal
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-		 -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		 -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		 -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-		 -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		  0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-		 -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		  0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-		 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 		};
 
 		float skyboxVertices[] = {
@@ -167,8 +167,8 @@ namespace Hub
 		
 		auto cubeVAO = VertexArray::create();
 		auto cubeVBO = VertexBuffer::create(cubeVertices, sizeof(cubeVertices), BufferUsage::StaticDraw);
-		cubeVAO->bindAttribute(0, 3, *cubeVBO, Type::Float, 5 * sizeof(float), 0 * sizeof(float));
-		cubeVAO->bindAttribute(1, 2, *cubeVBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
+		cubeVAO->bindAttribute(0, 3, *cubeVBO, Type::Float, 6 * sizeof(float), 0 * sizeof(float));
+		cubeVAO->bindAttribute(1, 3, *cubeVBO, Type::Float, 6 * sizeof(float), 3 * sizeof(float));
 
 		const char* filePath = "../Asset/container2.png";	
 		auto cubeTexture = Texture::create(filePath);
@@ -237,10 +237,12 @@ namespace Hub
 
 			glBindVertexArray(*cubeVAO);
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, *cubeTexture);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, *cubeMap);
 			auto model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
 			shader.setMatirx4("model", model);
+			shader.setVec3("cameraPos", camera.getPosition());
+			shader.setInt("skybox", 0);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
 
