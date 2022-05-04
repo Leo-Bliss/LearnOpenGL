@@ -212,6 +212,9 @@ namespace Hub
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+
 		while (!hWindow.shouldClose())
 		{
 			float currentFrame = static_cast<float>(glfwGetTime());
@@ -221,27 +224,11 @@ namespace Hub
 			glfwPollEvents();
 			processInput(window);
 
-			glEnable(GL_DEPTH_TEST);
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			auto view = camera.getViewMatrix();
 			auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);
-
-			// skybox
-			glDepthMask(GL_FALSE);
-			skyboxShader.use();
-			auto justLineView = glm::mat4(glm::mat3(view));
-			skyboxShader.setMatirx4("view", justLineView);
-			skyboxShader.setMatirx4("projection", projection);
-			skyboxShader.setInt("skybox", 0);
-
-			glBindVertexArray(*skyboxVAO);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, *cubeMap);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-			glDepthMask(GL_TRUE);
-			glBindVertexArray(0);
 
 			// cube
 			shader.use();
@@ -254,6 +241,19 @@ namespace Hub
 			auto model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
 			shader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(0);
+
+			// skybox
+			skyboxShader.use();
+			auto justLineView = glm::mat4(glm::mat3(view));
+			skyboxShader.setMatirx4("view", justLineView);
+			skyboxShader.setMatirx4("projection", projection);
+			skyboxShader.setInt("skybox", 0);
+
+			glBindVertexArray(*skyboxVAO);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, *cubeMap);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 			glBindVertexArray(0);
 
