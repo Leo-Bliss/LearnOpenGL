@@ -140,10 +140,105 @@ namespace Hub
 		}
 		glfwTerminate();
 	}
+
+	void test2()
+	{
+		Window hWindow(windowWidth, windowHeight);
+		auto window = hWindow.getGLWindowIns();
+		glfwSetCursorPosCallback(window, mouse_callback);
+		glfwSetScrollCallback(window, scroll_callback);
+
+		Shader shader("./shader/fragcoord.vs", "./shader/fragcoord.fs");
+		//cube
+		float cubeVertices[] = {
+			// positions          // texture Coords
+			// Back face
+		   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+			0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+		   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+		   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+		   // Front face
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+			0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+		   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+		   // Left face
+		   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+		   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
+		   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+		   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+		   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+		   // Right face
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+			0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
+			0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+			0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
+		   // Bottom face
+		   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+			0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+			0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+		   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+		   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+		   // Top face
+		   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
+			0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+		   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+		   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left     
+		};
+
+		auto VAO = VertexArray::create();
+		auto VBO = VertexBuffer::create(cubeVertices, sizeof(cubeVertices), BufferUsage::StaticDraw);
+		VAO->bindAttribute(0, 3, *VBO, Type::Float, 5 * sizeof(float), 0);
+		VAO->bindAttribute(1, 2, *VBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
+		
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_PROGRAM_POINT_SIZE);
+
+		while (!hWindow.shouldClose())
+		{
+			float currentFrame = static_cast<float>(glfwGetTime());
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			glfwPollEvents();
+			processInput(window);
+
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			shader.use();
+			auto model = glm::mat4(1.0);
+			auto view = camera.getViewMatrix();
+			auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);
+			shader.setMatirx4("model", model);
+			shader.setMatirx4("view", view);
+			shader.setMatirx4("projection", projection);
+
+			glBindVertexArray(*VAO);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			glBindVertexArray(0);
+			glfwSwapBuffers(window);
+		}
+		glfwTerminate();
+	}
+
 }
+
+
 
 int main()
 {
-	Hub::test();
+	Hub::test2();
 	return 0;
 }
