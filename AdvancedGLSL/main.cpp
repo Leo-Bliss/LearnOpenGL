@@ -148,7 +148,7 @@ namespace Hub
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 
-		Shader shader("./shader/fragcoord.vs", "./shader/fragcoord.fs");
+		Shader shader("./shader/shader.vs", "./shader/shader.fs");
 		//cube
 		float cubeVertices[] = {
 			// positions          // texture Coords
@@ -201,8 +201,26 @@ namespace Hub
 		VAO->bindAttribute(0, 3, *VBO, Type::Float, 5 * sizeof(float), 0);
 		VAO->bindAttribute(1, 2, *VBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
 		
+		const char* frontTexFile = "../Asset/container2.png";
+		const char* backTexFile = "../Asset/container.jpg";
+		auto frontTex = Texture::create(frontTexFile);
+		auto backTex = Texture::create(backTexFile);
+		auto setTextureConfig = [](SPTexture& t)
+		{
+			t->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::Repeat);
+			t->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::Repeat);
+			t->setFilter(Filter::operator_t::Min, Filter::filter_t::LinearMipmapLinear);
+			t->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
+		};
+		setTextureConfig(frontTex);
+		setTextureConfig(backTex);
+
+		shader.use();
+		shader.setInt("frontTexture", 0);
+		shader.setInt("backTexture", 1);
+
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_PROGRAM_POINT_SIZE);
+		glDisable(GL_CULL_FACE);
 
 		while (!hWindow.shouldClose())
 		{
@@ -224,6 +242,10 @@ namespace Hub
 			shader.setMatirx4("view", view);
 			shader.setMatirx4("projection", projection);
 
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *frontTex);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, *backTex);
 			glBindVertexArray(*VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
