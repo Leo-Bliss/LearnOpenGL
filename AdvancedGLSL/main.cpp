@@ -3,6 +3,7 @@
 #include "camera.h"
 #include "vertex_array.h"
 #include "vertex_buffer.h"
+#include "uniform_buffer.h"
 #include "texture.h"
 
 
@@ -255,12 +256,135 @@ namespace Hub
 		glfwTerminate();
 	}
 
+	void test3()
+	{
+		Window hWindow(windowWidth, windowHeight);
+		auto window = hWindow.getGLWindowIns();
+		glfwSetCursorPosCallback(window, mouse_callback);
+		glfwSetScrollCallback(window, scroll_callback);
+		Shader redShader("./shader/common.vs", "./shader/red.fs");
+		Shader greenShader("./shader/common.vs", "./shader/green.fs");
+		Shader blueShader("./shader/common.vs", "./shader/blue.fs");
+		Shader yellowShader("./shader/common.vs", "./shader/yellow.fs");
+
+		float cubeVertices[] = {
+			// positions         
+			-0.5f, -0.5f, -0.5f,
+			 0.5f, -0.5f, -0.5f,
+			 0.5f,  0.5f, -0.5f,
+			 0.5f,  0.5f, -0.5f,
+			-0.5f,  0.5f, -0.5f,
+			-0.5f, -0.5f, -0.5f,
+
+			-0.5f, -0.5f,  0.5f,
+			 0.5f, -0.5f,  0.5f,
+			 0.5f,  0.5f,  0.5f,
+			 0.5f,  0.5f,  0.5f,
+			-0.5f,  0.5f,  0.5f,
+			-0.5f, -0.5f,  0.5f,
+
+			-0.5f,  0.5f,  0.5f,
+			-0.5f,  0.5f, -0.5f,
+			-0.5f, -0.5f, -0.5f,
+			-0.5f, -0.5f, -0.5f,
+			-0.5f, -0.5f,  0.5f,
+			-0.5f,  0.5f,  0.5f,
+
+			 0.5f,  0.5f,  0.5f,
+			 0.5f,  0.5f, -0.5f,
+			 0.5f, -0.5f, -0.5f,
+			 0.5f, -0.5f, -0.5f,
+			 0.5f, -0.5f,  0.5f,
+			 0.5f,  0.5f,  0.5f,
+
+			-0.5f, -0.5f, -0.5f,
+			 0.5f, -0.5f, -0.5f,
+			 0.5f, -0.5f,  0.5f,
+			 0.5f, -0.5f,  0.5f,
+			-0.5f, -0.5f,  0.5f,
+			-0.5f, -0.5f, -0.5f,
+
+			-0.5f,  0.5f, -0.5f,
+			 0.5f,  0.5f, -0.5f,
+			 0.5f,  0.5f,  0.5f,
+			 0.5f,  0.5f,  0.5f,
+			-0.5f,  0.5f,  0.5f,
+			-0.5f,  0.5f, -0.5f,
+		};
+		auto VAO = VertexArray::create();
+		auto VBO = VertexBuffer::create(cubeVertices, sizeof(cubeVertices), BufferUsage::StaticDraw);
+		VAO->bindAttribute(0, 3, *VBO, Type::Float, 3 * sizeof(float), 0);
+
+
+		// link each shader's uniform block to this uniform binding point
+		redShader.bindUniformBlock("Matrices", 0);
+		greenShader.bindUniformBlock("Matrices", 0);
+		blueShader.bindUniformBlock("Matrices", 0);
+		yellowShader.bindUniformBlock("Matrices", 0);
+
+		// create uniform buffer
+		auto UBO = UniformBuffer::create(nullptr, 2 * sizeof(glm::mat4), BufferUsage::StaticDraw);
+		// define the range of buffer that links to a uniform binding point
+		UBO->bindBufferRange(0, 0, 2 * sizeof(glm::mat4));
+
+		glEnable(GL_DEPTH_TEST);
+
+		while (!hWindow.shouldClose())
+		{
+			float currentFrame = static_cast<float>(glfwGetTime());
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			glfwPollEvents();
+			processInput(window);
+
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);
+			UBO->subData(glm::value_ptr(projection), 0, sizeof(glm::mat4));
+			auto view = camera.getViewMatrix();
+			UBO->subData(glm::value_ptr(view), sizeof(glm::mat4), sizeof(glm::mat4));
+
+			glBindVertexArray(*VAO);
+
+			redShader.use();
+			auto model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f));//top left
+			redShader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			greenShader.use();
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f)); // top right
+			greenShader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			blueShader.use();
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f)); // bottom left
+			blueShader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			yellowShader.use();
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f)); // bottom right
+			yellowShader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			glBindVertexArray(0);
+			glfwSwapBuffers(window);
+		}
+		glfwTerminate();
+	}
+
 }
+
 
 
 
 int main()
 {
-	Hub::test2();
+	Hub::test3();
 	return 0;
 }
