@@ -31,5 +31,6 @@ namespace Hub
 		void setVec3(const GLchar* key, float x, float y, float z);
 		void setInt(const GLchar* key, const GLint val);
 		void setMatirx4(const GLchar* key, const glm::mat4& mat);
+		void bindUniformBlock(const GLchar* key, unsigned int point);
 	};
 }

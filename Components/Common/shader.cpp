@@ -125,5 +125,11 @@ namespace Hub
 		glUniformMatrix4fv(keyLocation, 1, GL_FALSE, glm::value_ptr(mat)); // 第二个参数：矩阵个数，第三个： 行列是否置换
 	}
 
+	void Shader::bindUniformBlock(const GLchar* key, unsigned int point)
+	{
+		unsigned int index = glGetUniformBlockIndex(_programID, key);
+		glUniformBlockBinding(_programID, index, point);
+	}
+
 
 }
