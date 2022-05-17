@@ -108,13 +108,10 @@ namespace Hub
 				offsets[index++] = t;
 			}
 		}
-		// set offsets uniform for veterx shader
-		shader.use();
-		for (int i = 0; i < 100; ++i)
-		{
-			std::string key = "offsets[" + std::to_string(i) + "]";
-			shader.setVec2(key.c_str(), offsets[i]);
-		}
+		
+		auto instanceVBO = VertexBuffer::create(&offsets[0], offsets.size() * sizeof(glm::vec2), BufferUsage::StaticDraw );
+		VAO->bindAttribute(2, 2, *instanceVBO, Type::Float, sizeof(glm::vec2), 0);
+		glVertexAttribDivisor(2, 1);
 
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
