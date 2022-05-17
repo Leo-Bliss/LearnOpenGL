@@ -113,6 +113,12 @@ namespace Hub
 		glUniform3f(keyLocation, x, y, z);
 	}
 
+	void Shader::setVec2(const GLchar* key, const glm::vec2& v)
+	{
+		GLint keyLocation = glGetUniformLocation(_programID, key);
+		glUniform2f(keyLocation, v.x, v.y);
+	}
+
 	void Shader::setInt(const GLchar* key, const GLint val)
 	{
 		GLint keyLocation = glGetUniformLocation(_programID, key);
