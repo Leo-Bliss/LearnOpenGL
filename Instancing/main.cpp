@@ -3,23 +3,23 @@
 #include "camera.h"
 #include "vertex_array.h"
 #include "vertex_buffer.h"
-#include "texture.h"
+#include <array>
 
 
 namespace Hub
 {
 	int windowWidth = 800;
 	int windowHeight = 600;
-	float deltaTime = 0.0f; // ´æ´¢ÉÏÒ»Ö¡äÖÈ¾ËùÓÃÊ±¼ä£¨µ±Ç°Ê±¼ä´Á-ÉÏÒ»Ö¡Ê±¼ä´Á£©
-	float lastFrame = 0.0f; // ÉÏÒ»Ö¡Ê±¼ä´Á
+	float deltaTime = 0.0f; // å­˜å‚¨ä¸Šä¸€å¸§æ¸²æŸ“æ‰€ç”¨æ—¶é—´ï¼ˆå½“å‰æ—¶é—´æˆ³-ä¸Šä¸€å¸§æ—¶é—´æˆ³ï¼‰
+	float lastFrame = 0.0f; // ä¸Šä¸€å¸§æ—¶é—´æˆ³
 
 	Camera camera;
 	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-	// ÊµÏÖ¼üÅÌÒÆ¶¯ÉãÏñ»ú
+	// å®ç°é”®ç›˜ç§»åŠ¨æ‘„åƒæœº
 	void processInput(GLFWwindow* window)
 	{
-		const float cameraSpeed = 5.0f * deltaTime; // ±£Ö¤ÉãÏñ»úÒÆ¶¯ËÙ¶ÈºÍÓ²¼şÎŞ¹Ø
+		const float cameraSpeed = 5.0f * deltaTime; // ä¿è¯æ‘„åƒæœºç§»åŠ¨é€Ÿåº¦å’Œç¡¬ä»¶æ— å…³
 
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
@@ -39,7 +39,7 @@ namespace Hub
 		}
 	}
 
-	// Êó±ê¿ØÖÆÉãÏñ»ú
+	// é¼ æ ‡æ§åˆ¶æ‘„åƒæœº
 	bool firstMouse = true;
 	glm::vec2 lastPos(windowWidth / 2.0f, windowHeight / 2.0f); // window center
 
@@ -56,12 +56,12 @@ namespace Hub
 			firstMouse = false;
 		}
 		GLfloat xoffset = pos.x - lastPos.x;
-		GLfloat yoffset = lastPos.y - pos.y; // ÓÉÓÚÕâÀïy×ø±ê·¶Î§´ÓÏÂÍùÉÏ
+		GLfloat yoffset = lastPos.y - pos.y; // ç”±äºè¿™é‡Œyåæ ‡èŒƒå›´ä»ä¸‹å¾€ä¸Š
 		lastPos = pos;
 		camera.processMouseMovement(xoffset, yoffset);
 	}
 
-	// ¹öÂÖµ÷ÕûÉãÏñ»úfov, ÊµÏÖËõ·ÅĞ§¹û
+	// æ»šè½®è°ƒæ•´æ‘„åƒæœºfov, å®ç°ç¼©æ”¾æ•ˆæœ
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		camera.processMouseScroll(yoffset);
@@ -95,7 +95,7 @@ namespace Hub
 		glDepthFunc(GL_LESS);
 
 		// get offsetList
-		glm::vec2 offsets[100];
+		std::array<glm::vec2, 100> offsets;
 		unsigned int index = 0;
 		float offset = 0.1f;
 		for (int x = -10; x < 10; x += 2)
@@ -108,6 +108,7 @@ namespace Hub
 				offsets[index++] = t;
 			}
 		}
+		// set offsets uniform for veterx shader
 		shader.use();
 		for (int i = 0; i < 100; ++i)
 		{
