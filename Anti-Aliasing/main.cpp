@@ -67,6 +67,62 @@ namespace Hub
 		camera.processMouseScroll(static_cast<float>(yoffset));
 	}
 
+	float cubeVertices[] = {
+		// positions         
+		-0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+
+		-0.5f, -0.5f,  0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+
+		-0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f, -0.5f,
+		 0.5f, -0.5f,  0.5f,
+		 0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
+
+		-0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f, -0.5f,
+		 0.5f,  0.5f,  0.5f,
+		 0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+	};
+
+	float quadVertices[] = {   // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+	   // positions   // texCoords
+	   -1.0f,  1.0f,  0.0f, 1.0f,
+	   -1.0f, -1.0f,  0.0f, 0.0f,
+		1.0f, -1.0f,  1.0f, 0.0f,
+
+	   -1.0f,  1.0f,  0.0f, 1.0f,
+		1.0f, -1.0f,  1.0f, 0.0f,
+		1.0f,  1.0f,  1.0f, 1.0f
+	};
+
 	void test()
 	{
 		glfwWindowHint(GLFW_SAMPLES, 4);
@@ -76,51 +132,6 @@ namespace Hub
 		glfwSetScrollCallback(window, scroll_callback);
 		Shader shader("./shader/shader.vs", "./shader/shader.fs");
 
-
-		float cubeVertices[] = {
-			// positions         
-			-0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			-0.5f,  0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-
-			-0.5f, -0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-			-0.5f, -0.5f,  0.5f,
-
-			-0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-
-			-0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			-0.5f, -0.5f,  0.5f,
-			-0.5f, -0.5f, -0.5f,
-
-			-0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f, -0.5f,
-		};
 		auto VAO = VertexArray::create();
 		auto VBO = VertexBuffer::create(cubeVertices, sizeof(cubeVertices), BufferUsage::StaticDraw);
 		VAO->bindAttribute(0, 3, *VBO, Type::Float, 3 * sizeof(float), 0);
@@ -161,6 +172,82 @@ namespace Hub
 		glfwTerminate();
 	}
 
+	void test2()
+	{
+		Window hWindow(windowWidth, windowHeight);
+		auto window = hWindow.getGLWindowIns();
+		glfwSetCursorPosCallback(window, mouse_callback);
+		glfwSetScrollCallback(window, scroll_callback);
+		Shader shader("./shader/shader.vs", "./shader/shader.fs");
+		Shader screenShader("./shader/screenShader.vs", "./shader/screenShader.fs");
+		
+		// cube VAO
+		auto cubeVAO = VertexArray::create();
+		auto cubeVBO = VertexBuffer::create(cubeVertices, sizeof(cubeVertices), BufferUsage::StaticDraw);
+		cubeVAO->bindAttribute(0, 3, *cubeVBO, Type::Float, 3 * sizeof(float), 0);
+		
+		// screen VAO
+		auto quaVAO = VertexArray::create();
+		auto quaVBO = VertexBuffer::create(quadVertices, sizeof(quadVertices),BufferUsage::StaticDraw);
+		quaVAO->bindAttribute(0, 3, *quaVBO, Type::Float, 5 * sizeof(float), 0);
+		quaVAO->bindAttribute(1, 2, *quaVBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
+		
+		// cfg MSAA framebuffer
+		unsigned int intermediateFBO;
+		glGenFramebuffers(1, &intermediateFBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBO);
+
+		// create a color attachment texture
+		auto screenTexture = Texture::create();
+		screenTexture->image2D(nullptr, Format::RGB, windowWidth, windowHeight, Type::UnsignedByte);
+
+		screenTexture->setFilter(Filter::operator_t::Min, Filter::filter_t::Linear);
+		screenTexture->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
+		// we only need a clolr buffer
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *screenTexture, 0);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "ERROR::FRAMEBUFFER:: Intermediate framebuffer is not complete!" << std::endl;
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		glEnable(GL_DEPTH_TEST);
+
+		// shader cfg
+		shader.use();
+		screenShader.setInt("screenTexture", 0);
+
+		while (!hWindow.shouldClose())
+		{
+			float currentFrame = static_cast<float>(glfwGetTime());
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			glfwPollEvents();
+			processInput(window);
+
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);
+			auto view = camera.getViewMatrix();
+
+
+			glBindVertexArray(*cubeVAO);
+
+			shader.use();
+			shader.setMatirx4("projection", projection);
+			shader.setMatirx4("view", view);
+			auto model = glm::mat4(1.0);
+			shader.setMatirx4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			glBindVertexArray(0);
+			glfwSwapBuffers(window);
+		}
+		glfwTerminate();
+	}
+
 }
 
 
@@ -168,6 +255,6 @@ namespace Hub
 
 int main()
 {
-	Hub::test();
+	Hub::test2();
 	return 0;
 }
