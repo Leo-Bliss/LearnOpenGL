@@ -85,6 +85,7 @@ namespace Hub
         void generateMipMap();
 
         void cubeMapImage2D(const std::vector<std::string>& faces);
+        void image2DMultisample(int width, int height);
 
 	private:
         texture_t _textureType;

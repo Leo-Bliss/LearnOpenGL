@@ -189,10 +189,33 @@ namespace Hub
 		// screen VAO
 		auto quaVAO = VertexArray::create();
 		auto quaVBO = VertexBuffer::create(quadVertices, sizeof(quadVertices),BufferUsage::StaticDraw);
-		quaVAO->bindAttribute(0, 3, *quaVBO, Type::Float, 5 * sizeof(float), 0);
-		quaVAO->bindAttribute(1, 2, *quaVBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
+		quaVAO->bindAttribute(0, 2, *quaVBO, Type::Float,4 * sizeof(float), 0);
+		quaVAO->bindAttribute(1, 2, *quaVBO, Type::Float,4 * sizeof(float), 2 * sizeof(float));
 		
 		// cfg MSAA framebuffer
+		unsigned int framebuffer;
+		glGenBuffers(1, &framebuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		
+		// create a multisampled color attachment texture
+		auto textureColorBufferMultiSampled = Texture::create();
+		textureColorBufferMultiSampled->image2DMultisample(windowWidth, windowHeight);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, *textureColorBufferMultiSampled, 0);
+		
+		// create a (also multisampled) renderbuffer object for depth and stencil attachments
+		unsigned int RBO;
+		glGenRenderbuffers(1, &RBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, windowWidth, windowHeight);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "ERROR::FRAMEBUFFER:: Intermediate framebuffer is not complete!" << std::endl;
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// cfg second post-processing framebuffer
 		unsigned int intermediateFBO;
 		glGenFramebuffers(1, &intermediateFBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, intermediateFBO);
@@ -203,6 +226,7 @@ namespace Hub
 
 		screenTexture->setFilter(Filter::operator_t::Min, Filter::filter_t::Linear);
 		screenTexture->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
+		
 		// we only need a clolr buffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *screenTexture, 0);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -210,8 +234,6 @@ namespace Hub
 			std::cout << "ERROR::FRAMEBUFFER:: Intermediate framebuffer is not complete!" << std::endl;
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		glEnable(GL_DEPTH_TEST);
 
 		// shader cfg
 		shader.use();
@@ -229,18 +251,42 @@ namespace Hub
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			// 1. draw scene as normal in multisampled buffers
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_DEPTH_TEST);
+
+			
 			auto projection = camera.getProjectionMatrix(windowWidth / windowHeight * 1.0f);
 			auto view = camera.getViewMatrix();
 
-
 			glBindVertexArray(*cubeVAO);
-
 			shader.use();
 			shader.setMatirx4("projection", projection);
 			shader.setMatirx4("view", view);
 			auto model = glm::mat4(1.0);
 			shader.setMatirx4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			// 2. now blit multisampled buffer to normal colorbuffer of intermediate FBO. Image is stored in screenTexture
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
+			glBlitFramebuffer(0, 0, windowWidth, windowHeight, 0, 0, windowWidth, windowHeight,GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
+			// 3. now render quad with scene's visuals as its texture image
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glClearColor(1.0, 1.0, 1.0, 1.0);
+			glClear(GL_COLOR_BUFFER_BIT);
+			glDisable(GL_DEPTH_TEST);
+			
+			// draw scene quad
+			screenShader.use();
+			glBindVertexArray(*quaVAO);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *screenTexture);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			
 
 			glBindVertexArray(0);
 			glfwSwapBuffers(window);
