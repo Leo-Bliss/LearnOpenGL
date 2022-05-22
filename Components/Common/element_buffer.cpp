@@ -14,28 +14,18 @@ namespace Hub
 
 	ElementBuffer::~ElementBuffer()
 	{
-		glDeleteBuffers(1, &_obj);
+
 	}
 
-	ElementBuffer::operator GLuint() const
+	ElementBuffer::ElementBuffer():Buffer(buffer_t::ElementArrayBuffer)
 	{
-		return _obj;
+		
 	}
 
-	void ElementBuffer::data(const void* data, size_t length, BufferUsage::buffer_usage_t usage)
+	ElementBuffer::ElementBuffer(const void* data, size_t length, BufferUsage::buffer_usage_t usage)
+		: Buffer(buffer_t::ElementArrayBuffer, data, length, usage)
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _obj);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, length, data, usage);
-	}
-
-	ElementBuffer::ElementBuffer()
-	{
-		glGenBuffers(1, &_obj);
-	}
-
-	ElementBuffer::ElementBuffer(const void* data, size_t length, BufferUsage::buffer_usage_t usage):ElementBuffer()
-	{
-		this->data(data, length, usage);
+		
 	}
 
 }

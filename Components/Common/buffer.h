@@ -17,12 +17,6 @@ namespace Hub
 			DynamicCopy = GL_DYNAMIC_COPY
 		};
 	}
-	enum buffer_t
-	{
-		ArrayBuffer = GL_ARRAY_BUFFER,
-		ElementArrayBuffer = GL_ELEMENT_ARRAY_BUFFER,
-		UniformBuffer = GL_UNIFORM_BUFFER,
-	};
 
 	class Buffer
 	{
@@ -32,6 +26,13 @@ namespace Hub
 		void data(const void* data, size_t length, BufferUsage::buffer_usage_t usage);
 		void subData(const void* data, size_t offset, size_t length);
 		void getSubData(void* data, size_t offset, size_t length);
+
+		enum buffer_t
+		{
+			ArrayBuffer = GL_ARRAY_BUFFER,
+			ElementArrayBuffer = GL_ELEMENT_ARRAY_BUFFER,
+			UniformBuffer = GL_UNIFORM_BUFFER,
+		};
 
 	protected:
 		Buffer(buffer_t bufferType);
