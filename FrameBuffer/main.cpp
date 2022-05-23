@@ -3,6 +3,8 @@
 #include "camera.h"
 #include "vertex_array.h"
 #include "vertex_buffer.h"
+#include "frame_buffer.h"
+#include "render_buffer.h"
 #include "texture.h"
 
 
@@ -179,9 +181,8 @@ namespace Hub
 		screenShader.setInt("screenTexture", 0);
 		
 		// framebuffer config
-		unsigned int framebuffer;
-		glGenFramebuffers(1, &framebuffer);
-		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		auto FBO = FrameBuffer::create();
+		glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
 		// create a color attachment texture
 		auto textureColorbuffer = Texture::create();
 		textureColorbuffer->image2D(nullptr, Format::format_t::RGBA, windowWidth, windowHeight, Type::UnsignedByte);
@@ -189,11 +190,10 @@ namespace Hub
 		textureColorbuffer->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, *textureColorbuffer, 0);
 		// create a render object for depth and stencil attachment(we don't sampling there)
-		unsigned int RBO;
-		glGenRenderbuffers(1, &RBO);
-		glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+		auto RBO = RenderBuffer::create();
+		glBindRenderbuffer(GL_RENDERBUFFER, *RBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, windowWidth, windowHeight);
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, *RBO);
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
 			std::cout << "ERROR::FRAMEBUFFER:: framebuffer is not complete!" << std::endl;
@@ -212,7 +212,7 @@ namespace Hub
 			glfwPollEvents();
 			processInput(window);
 			// bind to framebuffer and draw scene as we normally would to color texture
-			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glBindFramebuffer(GL_FRAMEBUFFER, *FBO);
 
 			glEnable(GL_DEPTH_TEST); //enable depth testing(is disabled for rendering screen-space quad)
 			// make sure we clear the framebuffer's content
