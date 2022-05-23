@@ -20,7 +20,7 @@ namespace Hub
 
 	void UniformBuffer::bindBufferRange(unsigned int point, unsigned int offset, unsigned int size)
 	{
-		glBindBufferRange(GL_UNIFORM_BUFFER, point, _obj, offset, size);
+		glBindBufferRange(buffer_t::UniformBuffer, point, _obj, offset, size);
 	}
 
 	UniformBuffer::UniformBuffer():Buffer(buffer_t::UniformBuffer)
