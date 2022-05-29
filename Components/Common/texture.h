@@ -15,7 +15,8 @@ namespace Hub
 			RGB = GL_RGB,
 			BGR = GL_BGR,
 			RGBA = GL_RGBA,
-			BGRA = GL_BGRA
+			BGRA = GL_BGRA,
+            DEPTH = GL_DEPTH_COMPONENT,
 		};
 	}
 

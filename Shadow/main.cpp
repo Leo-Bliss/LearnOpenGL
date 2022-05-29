@@ -166,19 +166,23 @@ namespace Hub
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, *depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
-			// Configure Shader And Matrices
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *floorTexture);
 			// Render Scene
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-			shader.use();
 			auto view = camera.getViewMatrix();
 			auto projection = camera.getProjectionMatrix(aspect);
 			
 			glViewport(0, 0, windowWidth, windowHeight);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			// Configure Shader And Matrices
+			// render depth map to quad for visual debugging
+			debugShader.use();
+			debugShader.setFloat("near_plane", near_plane);
+			debugShader.setFloat("far_plane", far_plane);
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, *depthMap);
-			// Render Scene
+			// Render Quad
 			
 			glBindVertexArray(0);
 			glfwSwapBuffers(window);
