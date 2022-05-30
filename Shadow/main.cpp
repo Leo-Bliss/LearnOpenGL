@@ -80,6 +80,119 @@ namespace Hub
 		camera.processMouseScroll(static_cast<float>(yoffset));
 	}
 
+	// renders a 1x1 3D cube in NDC
+	
+	SPVertexArray cubeVAO;
+	void renderCube()
+	{
+		static float cubeVertices[] = {
+			// back face
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
+			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
+			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
+			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
+			// front face
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
+			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
+			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
+			// left face
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
+			// right face
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
+			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
+			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
+			// bottom face
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
+			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
+			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
+			// top face
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
+			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
+			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
+			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
+		};
+		if (!cubeVAO)
+		{
+			cubeVAO = VertexArray::create();
+			auto cubeVBO = VertexBuffer::create(cubeVertices, sizeof(cubeVertices), BufferUsage::StaticDraw);
+			cubeVAO->bindAttribute(0, 3, *cubeVBO, Type::Float, 8 * sizeof(float), 0);
+			cubeVAO->bindAttribute(1, 3, *cubeVBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
+			cubeVAO->bindAttribute(2, 2, *cubeVBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
+			glBindVertexArray(0);
+		}
+		
+		glBindVertexArray(*cubeVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+		glBindVertexArray(0);
+	}
+	void renderScene(Shader& shader, VertexArray& vao)
+	{
+		// floor
+		glm::mat4 model = glm::mat4(1.0f);
+		shader.setMatirx4("model", model);
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// cube
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		shader.setMatirx4("model", model);
+		renderCube();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(2.0f, 1.5f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.5f));
+		shader.setMatirx4("model", model);
+		renderCube();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0f));
+		model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f)));
+		model = glm::scale(model, glm::vec3(0.25f));
+		shader.setMatirx4("model", model);
+		renderCube();
+	}
+
+	SPVertexArray quadVAO;
+	void renderQuad()
+	{
+		if (!quadVAO)
+		{
+			static float quadVertices[] = {
+				// positions        // texture Coords
+				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			};
+			quadVAO = VertexArray::create();
+			auto quadVBO = VertexBuffer::create(quadVertices, sizeof(quadVertices), BufferUsage::StaticDraw);
+			quadVAO->bindAttribute(0, 3, *quadVBO, Type::Float, 5 * sizeof(float), 0);
+			quadVAO->bindAttribute(1, 2, *quadVBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
+		}
+		glBindVertexArray(*quadVAO);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindVertexArray(0);
+	}
+
 	void test()
 	{
 		Window hWindow(windowWidth, windowHeight);
@@ -150,7 +263,7 @@ namespace Hub
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			// render depth of scene to texture
+			// render depth of scene to texture from light's perspective
 			float near_plane = 1.0f, far_plane = 7.5f;
 			glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
 			glm::mat4 lightView = glm::lookAt(
@@ -168,7 +281,7 @@ namespace Hub
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, *floorTexture);
-			// Render Scene
+			renderScene(shadowShader, *VAO);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			auto view = camera.getViewMatrix();
@@ -182,8 +295,7 @@ namespace Hub
 			debugShader.setFloat("far_plane", far_plane);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, *depthMap);
-			// Render Quad
-			
+			//renderQuad();
 			glBindVertexArray(0);
 			glfwSwapBuffers(window);
 		}
