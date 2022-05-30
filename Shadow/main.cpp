@@ -159,10 +159,10 @@ namespace Hub
 				glm::vec3(0.0f, 1.0f, 0.0f)
 			);
 
-			glm::mat4 lightSpaceMatirix = lightProjection * lightView;
+			glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
 			shadowShader.use();
-			shadowShader.setMatirx4("lightSpaceMatirix", lightSpaceMatirix);
+			shadowShader.setMatirx4("lightSpaceMatrix", lightSpaceMatrix);
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, *depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
