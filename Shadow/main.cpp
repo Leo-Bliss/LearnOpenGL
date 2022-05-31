@@ -187,6 +187,7 @@ namespace Hub
 			auto quadVBO = VertexBuffer::create(quadVertices, sizeof(quadVertices), BufferUsage::StaticDraw);
 			quadVAO->bindAttribute(0, 3, *quadVBO, Type::Float, 5 * sizeof(float), 0);
 			quadVAO->bindAttribute(1, 2, *quadVBO, Type::Float, 5 * sizeof(float), 3 * sizeof(float));
+			glBindVertexArray(0);
 		}
 		glBindVertexArray(*quadVAO);
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -202,7 +203,7 @@ namespace Hub
 
 		//Shader shader("./shader/shader.vs", "./shader/shader.fs");
 		Shader debugShader("./shader/debug.vs", "./shader/debug.fs");
-		Shader shadowShader("./shader/shadow.vs", "./shader/shadow.fs");
+		Shader depthShader("./shader/shadow_mapping_depth.vs", "./shader/shadow_mapping_depth.fs");
 
 		float planeVertices[] = {
 			// positions            // normals         // texcoords
@@ -249,7 +250,7 @@ namespace Hub
 
 		debugShader.use();
 		debugShader.setInt("depthMap", 0);
-		glm::vec3 lightPos(0.0f, 0.5f, 0.0f);
+		glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 		float aspect = windowWidth / windowHeight * 1.0f;
 		while (!hWindow.shouldClose())
 		{
@@ -264,24 +265,20 @@ namespace Hub
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// render depth of scene to texture from light's perspective
-			float near_plane = 1.0f, far_plane = 7.5f;
-			glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-			glm::mat4 lightView = glm::lookAt(
-				glm::vec3(-2.0f, 4.0f, -1.0f),
-				glm::vec3(0.0f, 0.0f, 0.0f),
-				glm::vec3(0.0f, 1.0f, 0.0f)
-			);
+			float nearPlane = 1.0f, farPlane = 7.5f;
+			glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
+			glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 			glm::mat4 lightSpaceMatrix = lightProjection * lightView;
 
-			shadowShader.use();
-			shadowShader.setMatirx4("lightSpaceMatrix", lightSpaceMatrix);
+			depthShader.use();
+			depthShader.setMatirx4("lightSpaceMatrix", lightSpaceMatrix);
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 			glBindFramebuffer(GL_FRAMEBUFFER, *depthMapFBO);
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, *floorTexture);
-			renderScene(shadowShader, *VAO);
+			renderScene(depthShader, *VAO);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			auto view = camera.getViewMatrix();
@@ -291,11 +288,10 @@ namespace Hub
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			// render depth map to quad for visual debugging
 			debugShader.use();
-			debugShader.setFloat("near_plane", near_plane);
-			debugShader.setFloat("far_plane", far_plane);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, *depthMap);
-			//renderQuad();
+			renderQuad();
+
 			glBindVertexArray(0);
 			glfwSwapBuffers(window);
 		}
