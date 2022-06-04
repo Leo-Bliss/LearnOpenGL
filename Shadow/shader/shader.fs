@@ -16,7 +16,7 @@ uniform vec3 lightPos;
 uniform vec3 viewPos;
 
 
-float calculateShadow(vec4 fragPosInLightSpace)
+float calculateShadow(vec4 fragPosInLightSpace, vec3 normal, vec3 lightDir)
 {
 	// perform perspective divide
 	vec3 projCoords = fragPosInLightSpace.xyz / fragPosInLightSpace.w;
@@ -24,7 +24,8 @@ float calculateShadow(vec4 fragPosInLightSpace)
 	projCoords = projCoords * 0.5 + 0.5;
 	float closestDepth = texture(depthMap, projCoords.xy).r;
 	float currentDepth = projCoords.z;
-	float shadow =  currentDepth > closestDepth ? 1.0 : 0.0;
+	float bias = max(0.05 * (1.0 - dot(normal, lightDir)),0.005);
+	float shadow = currentDepth-bias > closestDepth ? 1.0 : 0.0;
 	return shadow;
 }
 void main()
@@ -45,7 +46,7 @@ void main()
 	spec = pow(max(dot(normal, halfwayDir), 0.0), 64.0);
 	vec3 specular = spec * lightColor;
 
-	float shadow = calculateShadow(fs_in.FragPosInLightSpace);
+	float shadow = calculateShadow(fs_in.FragPosInLightSpace, normal, lightDir);
 	vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;
 	
 	FragColor = vec4(lighting, 1.0);
