@@ -247,6 +247,7 @@ namespace Hub
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		glEnable(GL_DEPTH_TEST);
 
 		debugShader.use();
 		debugShader.setInt("depthMap", 0);
@@ -281,8 +282,6 @@ namespace Hub
 			renderScene(depthShader, *VAO);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-			auto view = camera.getViewMatrix();
-			auto projection = camera.getProjectionMatrix(aspect);
 			
 			glViewport(0, 0, windowWidth, windowHeight);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
