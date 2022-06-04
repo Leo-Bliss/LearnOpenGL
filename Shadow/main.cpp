@@ -248,6 +248,7 @@ namespace Hub
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glEnable(GL_DEPTH_TEST);
+		//glEnable(GL_CULL_FACE);
 
 		float nearPlane = 1.0;
 		float farPlane = 7.5;
@@ -282,7 +283,6 @@ namespace Hub
 			glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 			glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-
 			depthShader.use();
 			depthShader.setMatirx4("lightSpaceMatrix", lightSpaceMatrix);
 			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
@@ -290,13 +290,13 @@ namespace Hub
 			glClear(GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, *floorTexture);
+			//glCullFace(GL_FRONT); // solve peter panning issue, but it not work perfectly fine on plane: plane will be removed.
 			renderScene(depthShader, *VAO);
+			//glCullFace(GL_BACK);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 			
 			glViewport(0, 0, windowWidth, windowHeight);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			auto view = camera.getViewMatrix();
 			auto projection = camera.getProjectionMatrix(aspect);
 			shader.use();
