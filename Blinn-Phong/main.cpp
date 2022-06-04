@@ -107,9 +107,9 @@ namespace Hub
 		VAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
 		VAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
 
-		const char* filePath = "../Asset/wood.jpg";
+		const char* filePath = "../Asset/wood.png";
 		auto floorTexture = Texture::create(filePath);
-		floorTexture->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::ClampEdge);
+		floorTexture->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::Repeat);
 		floorTexture->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::Repeat);
 		floorTexture->setFilter(Filter::operator_t::Min, Filter::filter_t::LinearMipmapLinear);
 		floorTexture->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
