@@ -201,7 +201,7 @@ namespace Hub
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 
-		//Shader shader("./shader/shader.vs", "./shader/shader.fs");
+		Shader shader("./shader/shader.vs", "./shader/shader.fs");
 		Shader debugShader("./shader/debug.vs", "./shader/debug.fs");
 		Shader depthShader("./shader/shadow_mapping_depth.vs", "./shader/shadow_mapping_depth.fs");
 
@@ -223,7 +223,7 @@ namespace Hub
 		VAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
 		VAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
 
-		const char* filePath = "../Asset/wood.jpg";
+		const char* filePath = "../Asset/wood.png";
 		auto floorTexture = Texture::create(filePath);
 		floorTexture->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::Repeat);
 		floorTexture->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::Repeat);
@@ -256,6 +256,10 @@ namespace Hub
 		debugShader.setInt("depthMap", 0);
 		debugShader.setFloat("near", nearPlane);
 		debugShader.setFloat("far", farPlane);
+
+		shader.use();
+		shader.setInt("floorTexture", 0);
+		shader.setInt("depthMap", 1);
 
 		glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 		float aspect = windowWidth / windowHeight * 1.0f;
@@ -292,11 +296,27 @@ namespace Hub
 			
 			glViewport(0, 0, windowWidth, windowHeight);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			// render depth map to quad for visual debugging
-			debugShader.use();
+
+			auto view = camera.getViewMatrix();
+			auto projection = camera.getProjectionMatrix(aspect);
+			shader.use();
+			shader.setMatirx4("view", view);
+			shader.setMatirx4("projection", projection);
+			// set light uniform
+			shader.setVec3("viewPos", camera.getPosition());
+			shader.setVec3("lightPos", lightPos);
+			shader.setMatirx4("lightSpaceMatrix", lightSpaceMatrix);
 			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *floorTexture);
+			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, *depthMap);
-			renderQuad();
+			renderScene(shader, *VAO);
+
+			//// render depth map to quad for visual debugging
+			//debugShader.use();
+			//glActiveTexture(GL_TEXTURE0);
+			//glBindTexture(GL_TEXTURE_2D, *depthMap);
+			//renderQuad();
 
 			glBindVertexArray(0);
 			glfwSwapBuffers(window);
