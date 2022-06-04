@@ -249,10 +249,17 @@ namespace Hub
 
 		glEnable(GL_DEPTH_TEST);
 
+		float nearPlane = 1.0;
+		float farPlane = 7.5;
+
 		debugShader.use();
 		debugShader.setInt("depthMap", 0);
+		debugShader.setFloat("near", nearPlane);
+		debugShader.setFloat("far", farPlane);
+
 		glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 		float aspect = windowWidth / windowHeight * 1.0f;
+		
 		while (!hWindow.shouldClose())
 		{
 			float currentFrame = static_cast<float>(glfwGetTime());
