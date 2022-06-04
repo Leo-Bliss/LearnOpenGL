@@ -238,8 +238,10 @@ namespace Hub
 		depthMap->image2D(nullptr, Format::DEPTH, SHADOW_WIDTH, SHADOW_HEIGHT, Type::Float);
 		depthMap->setFilter(Filter::operator_t::Min, Filter::filter_t::Nearest);
 		depthMap->setFilter(Filter::operator_t::Mag, Filter::filter_t::Nearest);
-		depthMap->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::Repeat);
-		depthMap->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::Repeat);
+		depthMap->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::ClampBorder);
+		depthMap->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::ClampBorder);
+		Color borderColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+		depthMap->setBorderColor(borderColor);
 		// attach depth texture as fbo's depth buffer
 		glBindFramebuffer(GL_FRAMEBUFFER, *depthMapFBO);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, *depthMap, 0);
