@@ -326,6 +326,41 @@ namespace Hub
 		glfwTerminate();
 	}
 
+	void test2()
+	{
+		auto depthMapFBO = FrameBuffer::create();
+
+		auto depthCubeMap = Texture::create(Hub::TextureCubeMap);
+		const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+		depthCubeMap->cubeMapImage2D(SHADOW_WIDTH, SHADOW_HEIGHT);
+		depthCubeMap->setFilter(Filter::operator_t::Mag, Filter::filter_t::Nearest);
+		depthCubeMap->setFilter(Filter::operator_t::Min, Filter::filter_t::Nearest);
+		depthCubeMap->setWrapping(Wrapping::axis_t::R, Wrapping::wrapping_t::ClampEdge);
+		depthCubeMap->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::ClampEdge);
+		depthCubeMap->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::ClampEdge);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, *depthMapFBO);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, *depthCubeMap, 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// 1. first render to depth cubemap
+		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, *depthCubeMap);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		// configure shader and matrix
+		// render scene
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// 2. then render scene as normal with shadow mapping
+		glViewport(0, 0, windowWidth, windowHeight);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// configure shader and matrix
+		glBindTexture(GL_TEXTURE_CUBE_MAP, *depthCubeMap);
+		// render scene
+	}
+
 }
 
 
