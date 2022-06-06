@@ -85,6 +85,19 @@ namespace Hub
 		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 
+	void Texture::cubeMapImage2D(int width, int height)
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, _obj);
+		for (size_t i = 0; i < 6; ++i)
+		{
+			
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, Format::format_t::DEPTH,
+				width, height, 0, Format::format_t::DEPTH,
+				Type::UnsignedByte, nullptr);
+		}
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	}
+
 	void Texture::image2DMultisample(int width, int height)
 	{
 		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, _obj);
