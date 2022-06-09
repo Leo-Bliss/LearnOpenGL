@@ -345,6 +345,30 @@ namespace Hub
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		float aspect = SHADOW_WIDTH / SHADOW_HEIGHT * 1.0f;
+		float near = 1.0f;
+		float far = 1.0f;
+		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
+		glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
+
+		std::vector<glm::mat4> shadhowTransforms;
+		std::vector<glm::vec3> vecs = {
+			{1.0, 0.0, 0.0}, {0.0, -1.0, 0.0},
+			{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0},
+			{0.0, 1.0, 0.0}, {0.0, 0.0, 1.0},
+			{0.0, -1.0, 0.0}, {0.0, 0.0, 1.0},
+			{0.0, 0.0, 1.0}, {0.0, -1.0, 0.0},
+			{0.0, 0.0, -1.0}, {0.0, -1.0, 0.0}
+		};
+		for (size_t i = 0; i < vecs.size(); i += 2)
+		{
+			auto& front = vecs[i];
+			auto targetPos = lightPos + front;
+			auto& up = vecs[i + 1];
+			auto view = glm::lookAt(lightPos, targetPos, up);
+			shadhowTransforms.push_back(shadowProj * view);
+		}
+
 		// 1. first render to depth cubemap
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, *depthCubeMap);
