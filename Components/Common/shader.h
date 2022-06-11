@@ -18,7 +18,7 @@ namespace Hub
 		GLuint _programID;
 
 		// 构造器读取并构建 着色器
-		Shader(const GLchar* vsPath, const GLchar* fsPath);
+		Shader(const GLchar* vsPath, const GLchar* fsPath, const char* gsPath = nullptr);
 		// 使用程序
 		void use();
 

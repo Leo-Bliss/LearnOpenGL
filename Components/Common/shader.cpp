@@ -2,15 +2,18 @@
 
 namespace Hub
 {
-	Shader::Shader(const GLchar* vsPath, const GLchar* fsPath)
+	Shader::Shader(const GLchar* vsPath, const GLchar* fsPath, const char* gsPath)
 	{
 		std::string vertexCode;
 		std::string fragmentCode;
+		std::string geometryCode;
 		std::ifstream vShaderFile;
 		std::ifstream fShaderFile;
+		std::ifstream gShaderFile;
 		// 保证ifstream对象可以抛出异常；
 		vShaderFile.exceptions(std::ifstream::badbit);
 		fShaderFile.exceptions(std::ifstream::badbit);
+		gShaderFile.exceptions(std::ifstream::badbit);
 		try {
 			// 打开文件
 			vShaderFile.open(vsPath);
@@ -25,6 +28,16 @@ namespace Hub
 			// 转换至GLchar数组
 			vertexCode = vShaderStream.str();
 			fragmentCode = fShaderStream.str();
+
+			// 几何着色器代码加载
+			if (gsPath != nullptr)
+			{
+				gShaderFile.open(gsPath);
+				std::stringstream gShaderStream;
+				gShaderStream << gShaderFile.rdbuf();
+				gShaderFile.close();
+				geometryCode = gShaderStream.str();
+			}
 		}
 		catch (std::ifstream::failure e)
 		{
@@ -45,18 +58,33 @@ namespace Hub
 		glCompileShader(fragmentShader);
 		checkShaderCompile(fragmentShader, fsPath);
 
+		GLuint geometryShader;
+		if (gsPath != nullptr)
+		{
+			const GLchar* gShaderCode = geometryCode.c_str();
+			geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+			glShaderSource(geometryShader, 1, &gShaderCode, nullptr);
+			glCompileShader(geometryShader);
+			checkShaderCompile(geometryShader, gsPath);
+		}
+
 		// 创建一个着色器程序: 用于链接shader
 		_programID = glCreateProgram();
 
 		// 将着色器对象附加到着色程序上
 		glAttachShader(_programID, vertexShader);
 		glAttachShader(_programID, fragmentShader);
+		if (gsPath != nullptr)
+		{
+			glAttachShader(_programID, geometryShader);
+		}
 		glLinkProgram(_programID);
 		checkProgramLink();
 
 		// 链接完成删除着色对象
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
+		glDeleteShader(geometryShader);
 	}
 
 	void Shader::use()
