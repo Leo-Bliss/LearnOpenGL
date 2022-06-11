@@ -84,7 +84,10 @@ namespace Hub
 		// 链接完成删除着色对象
 		glDeleteShader(vertexShader);
 		glDeleteShader(fragmentShader);
-		glDeleteShader(geometryShader);
+		if (gsPath != nullptr)
+		{
+			glDeleteShader(geometryShader);
+		}
 	}
 
 	void Shader::use()
