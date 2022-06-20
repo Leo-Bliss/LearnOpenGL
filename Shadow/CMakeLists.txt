@@ -9,7 +9,7 @@ option(GROUP_BY_EXPLORER ON) 							# 开启分组
 
 file(GLOB_RECURSE HEADER_FILES *.h *.hpp *.ini)
 file(GLOB_RECURSE SOURCE_FILES *.cpp *.c)
-file(GLOB_RECURSE SHADER_FILES *.hlsl *.vs *.fs)
+file(GLOB_RECURSE SHADER_FILES *.hlsl *.vs *.fs *.gs)
 
 set(CppFile ${HEADER_FILES} ${SOURCE_FILES})
 set(AllFile ${CppFile} ${SHADER_FILES})
