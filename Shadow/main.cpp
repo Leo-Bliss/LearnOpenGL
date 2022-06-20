@@ -14,9 +14,9 @@ namespace Hub
 	float deltaTime = 0.0f; // 存储上一帧渲染所用时间（当前时间戳-上一帧时间戳）
 	float lastFrame = 0.0f; // 上一帧时间戳
 
-	bool blinn = false;
 	bool beforeMode = true;
-	bool blinnKeyPressed = false;
+	bool shadowKeyPressed = false;
+	bool shadows = false;
 
 	Camera camera;
 
@@ -41,14 +41,14 @@ namespace Hub
 		{
 			camera.processKeyBoard(CameraMovement::RIGHT, deltaTime);
 		}
-		if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !blinnKeyPressed)
+		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS && !shadowKeyPressed)
 		{
-			blinn = !blinn;
-			blinnKeyPressed = true;
+			shadows = !shadows;
+			shadowKeyPressed = true;
 		}
-		if (glfwGetKey(window, GLFW_KEY_B) == GLFW_RELEASE)
+		if (glfwGetKey(window, GLFW_KEY_G) == GLFW_RELEASE)
 		{
-			blinnKeyPressed = false;
+			shadowKeyPressed = false;
 		}
 	}
 
@@ -78,6 +78,29 @@ namespace Hub
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		camera.processMouseScroll(static_cast<float>(yoffset));
+	}
+
+	SPVertexArray VAO;
+	void generatePlaneVAO()
+	{
+		static float planeVertices[] = {
+			// positions            // normals         // texcoords
+			 10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
+			-10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+			-10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
+
+			 10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
+			-10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
+			 10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
+		};
+
+		VAO = VertexArray::create();
+		auto VBO = VertexBuffer::create(planeVertices, sizeof(planeVertices), BufferUsage::StaticDraw);
+
+		VAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0);
+		VAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
+		VAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
+		glBindVertexArray(0);
 	}
 
 	// renders a 1x1 3D cube in NDC
@@ -145,14 +168,24 @@ namespace Hub
 	}
 	void renderScene(Shader& shader, VertexArray& vao)
 	{
-		// floor
+		//// floor
+		//glm::mat4 model = glm::mat4(1.0f);
+		//shader.setMatirx4("model", model);
+		//glBindVertexArray(vao);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
+		// room
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(5.0f));
 		shader.setMatirx4("model", model);
-		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDisable(GL_CULL_FACE);
+		shader.setInt("reverse_normal", 1);
+		renderCube();
+		shader.setInt("reverse_normal", 0);
+		glEnable(GL_CULL_FACE);
+
 		// cube
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0f));
+		model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.5f));
 		shader.setMatirx4("model", model);
 		renderCube();
@@ -205,23 +238,7 @@ namespace Hub
 		Shader debugShader("./shader/debug.vs", "./shader/debug.fs");
 		Shader depthShader("./shader/shadow_mapping_depth.vs", "./shader/shadow_mapping_depth.fs");
 
-		float planeVertices[] = {
-			// positions            // normals         // texcoords
-			 10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-			-10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-			-10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-
-			 10.0f, -0.5f,  10.0f,  0.0f, 1.0f, 0.0f,  10.0f,  0.0f,
-			-10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
-			 10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
-		};
-
-		auto VAO = VertexArray::create();
-		auto VBO = VertexBuffer::create(planeVertices, sizeof(planeVertices), BufferUsage::StaticDraw);
-
-		VAO->bindAttribute(0, 3, *VBO, Type::Float, 8 * sizeof(float), 0);
-		VAO->bindAttribute(1, 3, *VBO, Type::Float, 8 * sizeof(float), 3 * sizeof(float));
-		VAO->bindAttribute(2, 2, *VBO, Type::Float, 8 * sizeof(float), 6 * sizeof(float));
+		generatePlaneVAO();
 
 		const char* filePath = "../Asset/wood.png";
 		auto floorTexture = Texture::create(filePath);
@@ -328,6 +345,22 @@ namespace Hub
 
 	void test2()
 	{
+		Window hWindow(windowWidth, windowHeight);
+		auto window = hWindow.getGLWindowIns();
+		glfwSetCursorPosCallback(window, mouse_callback);
+		glfwSetScrollCallback(window, scroll_callback);
+		Shader shader("./shader/shader2.vs", "./shader/shader2.fs");
+		Shader depthShader("./shader/cube_mapping_depth.vs", "./shader/cube_mapping_depth.fs", "./shader/cube_mapping_depth.gs");
+
+		generatePlaneVAO();
+
+		const char* filePath = "../Asset/wood.png";
+		auto floorTexture = Texture::create(filePath);
+		floorTexture->setWrapping(Wrapping::axis_t::S, Wrapping::wrapping_t::Repeat);
+		floorTexture->setWrapping(Wrapping::axis_t::T, Wrapping::wrapping_t::Repeat);
+		floorTexture->setFilter(Filter::operator_t::Min, Filter::filter_t::LinearMipmapLinear);
+		floorTexture->setFilter(Filter::operator_t::Mag, Filter::filter_t::Linear);
+
 		auto depthMapFBO = FrameBuffer::create();
 
 		auto depthCubeMap = Texture::create(Hub::TextureCubeMap);
@@ -345,44 +378,93 @@ namespace Hub
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+		glEnable(GL_DEPTH_TEST);
+
+		shader.use();
+		shader.setInt("diffuseTexture", 0);
+		shader.setInt("depthMap", 1);
+
+		glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 		float aspect = SHADOW_WIDTH / SHADOW_HEIGHT * 1.0f;
-		float near = 1.0f;
-		float far = 1.0f;
-		glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
-		glm::vec3 lightPos(-2.0f, 4.0f, -1.0f);
 
-		std::vector<glm::mat4> shadhowTransforms;
-		std::vector<glm::vec3> vecs = {
-			{1.0, 0.0, 0.0}, {0.0, -1.0, 0.0},
-			{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0},
-			{0.0, 1.0, 0.0}, {0.0, 0.0, 1.0},
-			{0.0, -1.0, 0.0}, {0.0, 0.0, 1.0},
-			{0.0, 0.0, 1.0}, {0.0, -1.0, 0.0},
-			{0.0, 0.0, -1.0}, {0.0, -1.0, 0.0}
-		};
-		for (size_t i = 0; i < vecs.size(); i += 2)
+		// render loop
+		while (!hWindow.shouldClose())
 		{
-			auto& front = vecs[i];
-			auto targetPos = lightPos + front;
-			auto& up = vecs[i + 1];
-			auto view = glm::lookAt(lightPos, targetPos, up);
-			shadhowTransforms.push_back(shadowProj * view);
+			float currentFrame = static_cast<float>(glfwGetTime());
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			glfwPollEvents();
+			processInput(window);
+			// move light position over time
+			lightPos.z = static_cast<float>(sin(glfwGetTime() * 0.5) * 3.0);;
+
+			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			float near = 1.0f;
+			float far = 25.0f;
+			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), aspect, near, far);
+
+			std::vector<glm::mat4> shadowTransforms;
+			static std::vector<glm::vec3> vecs = {
+				{1.0, 0.0, 0.0}, {0.0, -1.0, 0.0},
+				{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0},
+				{0.0, 1.0, 0.0}, {0.0, 0.0, 1.0},
+				{0.0, -1.0, 0.0}, {0.0, 0.0, -1.0},
+				{0.0, 0.0, 1.0}, {0.0, -1.0, 0.0},
+				{0.0, 0.0, -1.0}, {0.0, -1.0, 0.0}
+			};
+			for (size_t i = 0; i < vecs.size(); i += 2)
+			{
+				auto& front = vecs[i];
+				auto targetPos = lightPos + front;
+				auto& up = vecs[i + 1];
+				auto view = glm::lookAt(lightPos, targetPos, up);
+				shadowTransforms.push_back(shadowProj * view);
+			}
+
+			// 1. first render to depth cubemap
+			glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+			glBindFramebuffer(GL_FRAMEBUFFER, *depthMapFBO);
+			glClear(GL_DEPTH_BUFFER_BIT);
+			// configure shader and matrix
+			depthShader.use();
+			for (uint i = 0; i < 6; ++i)
+			{
+				auto key = "shadowMatrices[" + std::to_string(i) + "]";
+				depthShader.setMatirx4(key.c_str(), shadowTransforms[i]);
+			}
+			depthShader.setFloat("far_plane", far);
+			depthShader.setVec3("lightPos", lightPos);
+			renderScene(depthShader, *VAO);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			// 2. then render scene as normal with shadow mapping
+			glViewport(0, 0, windowWidth, windowHeight);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			// configure shader and matrix
+			auto view = camera.getViewMatrix();
+			auto projection = camera.getProjectionMatrix(aspect);
+			shader.use();
+			shader.setMatirx4("view", view);
+			shader.setMatirx4("projection", projection);
+			// set light uniform
+			shader.setVec3("viewPos", camera.getPosition());
+			shader.setVec3("lightPos", lightPos);
+			shader.setFloat("far_plane", far);
+			shader.setInt("shadows", shadows);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, *floorTexture);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, *depthCubeMap);
+			renderScene(shader, *VAO);
+
+			glBindVertexArray(0);
+			glfwSwapBuffers(window);
 		}
-
-		// 1. first render to depth cubemap
-		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
-		glBindFramebuffer(GL_FRAMEBUFFER, *depthCubeMap);
-		glClear(GL_DEPTH_BUFFER_BIT);
-		// configure shader and matrix
-		// render scene
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		// 2. then render scene as normal with shadow mapping
-		glViewport(0, 0, windowWidth, windowHeight);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// configure shader and matrix
-		glBindTexture(GL_TEXTURE_CUBE_MAP, *depthCubeMap);
-		// render scene
+		glfwTerminate();
+		
 	}
 
 }
@@ -390,6 +472,6 @@ namespace Hub
 
 int main()
 {
-	Hub::test();
+	Hub::test2();
 	return 0;
 }
