@@ -182,24 +182,31 @@ namespace Hub
 		renderCube();
 		shader.setInt("reverse_normal", 0);
 		glEnable(GL_CULL_FACE);
-
-		// cube
+		// cubes
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0f));
+		model = glm::translate(model, glm::vec3(4.0f, -3.5f, 0.0));
 		model = glm::scale(model, glm::vec3(0.5f));
 		shader.setMatirx4("model", model);
 		renderCube();
-
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0f));
+		model = glm::translate(model, glm::vec3(2.0f, 3.0f, 1.0));
+		model = glm::scale(model, glm::vec3(0.75f));
+		shader.setMatirx4("model", model);
+		renderCube();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-3.0f, -1.0f, 0.0));
 		model = glm::scale(model, glm::vec3(0.5f));
 		shader.setMatirx4("model", model);
 		renderCube();
-
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0f));
-		model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0f, 0.0f, 1.0f)));
-		model = glm::scale(model, glm::vec3(0.25f));
+		model = glm::translate(model, glm::vec3(-1.5f, 1.0f, 1.5));
+		model = glm::scale(model, glm::vec3(0.5f));
+		shader.setMatirx4("model", model);
+		renderCube();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-1.5f, 2.0f, -3.0));
+		model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+		model = glm::scale(model, glm::vec3(0.75f));
 		shader.setMatirx4("model", model);
 		renderCube();
 	}
@@ -397,7 +404,7 @@ namespace Hub
 			glfwPollEvents();
 			processInput(window);
 			// move light position over time
-			lightPos.z = static_cast<float>(sin(glfwGetTime() * 0.5) * 3.0);;
+			//lightPos.z = static_cast<float>(sin(glfwGetTime() * 0.5) * 3.0);;
 
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
