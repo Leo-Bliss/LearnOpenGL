@@ -20,12 +20,37 @@ uniform bool shadows;
 float shadowCalculation(vec3 fragPos)
 {
 	vec3 fragToLight = fragPos - lightPos;
+	/*
 	float closestDepth = texture(depthMap, fragToLight).r;
 	closestDepth *= far_plane;
 	float currentDepth = length(fragToLight);
 	float bias = 0.05;
 	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 	//FragColor = vec4(vec3(closestDepth / far_plane), 1.0);
+	return shadow;
+	*/
+
+	// pcf
+	float shadow = 0.0;
+	float bias = 0.05;
+	float samples = 4.0;
+	float offset = 0.1;
+	float steps = offset / (samples * 0.5);
+	float currentDepth = length(fragToLight);
+	for(float x = -offset; x < offset; x += steps)
+	{
+		for(float y = -offset; y < offset; y += steps)
+		{
+			for(float z = -offset; z < offset; z += steps)
+			{
+				float closestDepth = texture(depthMap, fragToLight + vec3(x, y, z)).r;
+				closestDepth *= far_plane;
+				if(currentDepth - bias > closestDepth)
+					shadow += 1.0;
+			}
+		}
+	}
+	shadow /= (samples * samples * samples);
 	return shadow;
 }
 
