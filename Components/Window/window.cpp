@@ -61,7 +61,7 @@ namespace Hub
 		return Status::status_t::SUCCESS;
 	}
 
-	GLFWwindow* Window::getGLWindowIns() const
+	GLFWwindow* Window::getNativeHandle() const
 	{
 		return _glWindow;
 	}

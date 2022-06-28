@@ -24,7 +24,7 @@ namespace Hub
 		Window(int width, int height, std::string name = "Window", unsigned int majorVersion = 3, unsigned int minorVersion = 3);
 		
 		Status::status_t init();
-		GLFWwindow* getGLWindowIns() const;
+		GLFWwindow* getNativeHandle() const;
 
 		int _width;
 		int _height;

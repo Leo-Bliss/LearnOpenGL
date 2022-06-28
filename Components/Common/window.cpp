@@ -25,6 +25,11 @@ namespace Hub
 		init();
 	}
 
+	Window::~Window()
+	{
+		this->destroy();
+	}
+
 	Status::status_t Window::init()
 	{
 		glfwInit();
@@ -33,16 +38,16 @@ namespace Hub
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, _minorVersion); // 次版本
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-		_glWindow = glfwCreateWindow(_width, _height, _name.c_str(), nullptr, nullptr);
+		_window = glfwCreateWindow(_width, _height, _name.c_str(), nullptr, nullptr);
 
-		if (!_glWindow)
+		if (!_window)
 		{
 			std::cerr << "Failed to create a GLFW window" << std::endl;
 			glfwTerminate();
 			return Status::status_t::FAILED;
 		}
 
-		glfwMakeContextCurrent(_glWindow);
+		glfwMakeContextCurrent(_window);
 
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
@@ -54,63 +59,50 @@ namespace Hub
 		glViewport(0, 0, _width, _height);
 
 		// 注册调整窗口大小的回调事件: 视口 随 窗口大小 变化
-		glfwSetFramebufferSizeCallback(_glWindow, framebuffer_size_callback);
+		glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
 		// 键盘输入回调
-		glfwSetKeyCallback(_glWindow, key_callback);
+		glfwSetKeyCallback(_window, key_callback);
 
 		return Status::status_t::SUCCESS;
 	}
 
-	GLFWwindow* Window::getGLWindowIns() const
+	Window::WindowHandle Window::getNativeHandle() const
 	{
-		return _glWindow;
+		return _window;
 	}
 
-	bool Window::shouldClose()
+	bool Window::shouldClose() const
 	{
-		return glfwWindowShouldClose(_glWindow);
+		return glfwWindowShouldClose(_window);
 	}
 
 	void Window::setShouldClose(bool val)
 	{
 		if (shouldClose() == val) return;
-		glfwSetWindowShouldClose(_glWindow, val);
+		glfwSetWindowShouldClose(_window, val);
 	}
 
 	int Window::getKey(int key)
 	{
-		return glfwGetKey(_glWindow, key);
+		return glfwGetKey(_window, key);
 	}
-
-	/*void Window::swapBuffers()
-	{
-		glfwSwapBuffers(_glWindow);
-	}
-
-	void Window::processInput()
-	{
-
-	}
-
-	void Window::listenEvents()
-	{
-		glfwPollEvents();
-	}
-
-	void Window::terminate()
-	{
-		glfwTerminate();
-	}*/
-
 
 	void Window::setFramebufferSizeCallback(GLFWframebuffersizefun callBackFunc)
 	{
-		glfwSetFramebufferSizeCallback(_glWindow, callBackFunc);
+		glfwSetFramebufferSizeCallback(_window, callBackFunc);
 	}
 
 	void Window::setKeyCallback(GLFWkeyfun callBackFunc)
 	{
-		glfwSetKeyCallback(_glWindow, callBackFunc);
+		glfwSetKeyCallback(_window, callBackFunc);
 	}
 
+	void Window::destroy()
+	{
+		if (this->_window != nullptr)
+		{
+			setShouldClose(true);
+			glfwDestroyWindow(this->_window);
+		}
+	}
 }

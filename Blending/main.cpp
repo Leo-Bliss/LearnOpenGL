@@ -72,7 +72,7 @@ namespace Hub
 	void test()
 	{
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		Shader shader("./shader/blending.vs", "./shader/blending.fs");
 		Shader grassShader("./shader/grass.vs", "./shader/grass.fs");

@@ -83,7 +83,7 @@ namespace Hub
 	void test()
 	{
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 

@@ -68,7 +68,7 @@ namespace Hub
 	{
 		using Hub::Window;
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		Shader lightShader("./shader/light.vs", "./shader/light.fs");
 		Shader lampShader("./shader/lamp.vs", "./shader/lamp.fs");

@@ -20,8 +20,6 @@ namespace Hub
 	// 实现键盘移动摄像机
 	void processInput(GLFWwindow* window)
 	{
-		const float cameraSpeed = 5.0f * deltaTime; // 保证摄像机移动速度和硬件无关
-
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			camera.processKeyBoard(CameraMovement::FORWORD, deltaTime);
@@ -72,7 +70,7 @@ namespace Hub
 	void test()
 	{
 		Hub::Window hWindow(windowWidth, windowHight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		// shader
 		Shader ourShader("./shader/shader.vs", "./shader/shader.fs");

@@ -70,7 +70,7 @@ namespace Hub
 	void test()
 	{
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		Shader shader("./shader/shader.vs", "./shader/shader.fs");
 

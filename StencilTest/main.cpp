@@ -70,7 +70,7 @@ namespace Hub
 	void test()
 	{
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		Shader shader("./shader/senticl.vs", "./shader/senticl.fs");
 		Shader edgeShader("./shader/senticl.vs", "./shader/single_color.fs");

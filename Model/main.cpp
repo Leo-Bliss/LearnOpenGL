@@ -69,7 +69,7 @@ namespace Hub
 	void test()
 	{
 		Hub::Window hWindow(800, 600);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		Image::filpVerticallyOnLoadEnable(true);
 

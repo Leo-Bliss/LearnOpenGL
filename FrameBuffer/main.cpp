@@ -72,7 +72,7 @@ namespace Hub
 	void test()
 	{
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 
 		Shader shader("./shader/depth.vs", "./shader/depth.fs");
 		Shader screenShader("./shader/framebuffer_screen.vs", "./shader/framebuffer_screen.fs");

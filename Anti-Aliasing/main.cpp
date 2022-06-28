@@ -129,7 +129,7 @@ namespace Hub
 	{
 		glfwWindowHint(GLFW_SAMPLES, 4);
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 		Shader shader("./shader/shader.vs", "./shader/shader.fs");
@@ -177,7 +177,7 @@ namespace Hub
 	void test2()
 	{
 		Window hWindow(windowWidth, windowHeight);
-		auto window = hWindow.getGLWindowIns();
+		auto window = hWindow.getNativeHandle();
 		glfwSetCursorPosCallback(window, mouse_callback);
 		glfwSetScrollCallback(window, scroll_callback);
 		Shader shader("./shader/shader.vs", "./shader/shader.fs");
