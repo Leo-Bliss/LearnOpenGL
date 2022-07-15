@@ -1,11 +1,8 @@
 #pragma once
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-
-
 #include <memory>
 #include <string>
-#include <functional>
 
 namespace Hub
 {
@@ -13,8 +10,8 @@ namespace Hub
 	{
 		enum class status_t
 		{
-			FAILED = -1,
-			SUCCESS = 0
+			FAILED = 0,
+			SUCCESS = 1
 		};
 	}
 
@@ -22,11 +19,13 @@ namespace Hub
 	{
 		using WindowHandle = GLFWwindow*;
 	public:
-		Window() = default;
-		Window(int width = 800, int height = 600, std::string name = "Window", unsigned int majorVersion = 3, unsigned int minorVersion = 3);
+		Window(int width = 800, int height = 600, std::string name = "Window");
 		~Window();
 		Status::status_t init();
 		WindowHandle getNativeHandle() const;
+
+		void swapBuffer();
+		void pollEvents();
 
 		bool shouldClose() const;
 		void setShouldClose(bool val);
@@ -40,9 +39,6 @@ namespace Hub
 		int _height;
 		std::string _name;
 		GLFWwindow* _window = nullptr;
-
-		int _majorVersion; // TODO: 不作为成员
-		int _minorVersion;
 
 		void destroy();
 	};
